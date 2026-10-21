@@ -1,0 +1,6 @@
+/* Listing V6: reglas limitadas a esta estructura. Sin nth-child ni !important. */
+.inventory-v6 .reference-card { overflow: hidden; }
+.inventory-v6 .reference-actions { pointer-events: auto; }
+.inventory-v6 .reference-vehicles.list-view { grid-template-columns: minmax(0, 1fr); }
+.inventory-v6 .reference-media { height: auto; overflow: visible; }
+.inventory-v6 .action-column { height: auto; overflow: visible; }

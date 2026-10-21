@@ -1,0 +1,2 @@
+.reference-card .vehicle-price { font-variant-numeric: tabular-nums; }
+.vehicle-action:disabled { opacity: .5; cursor: not-allowed; }

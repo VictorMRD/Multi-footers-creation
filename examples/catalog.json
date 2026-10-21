@@ -1,109 +1,165 @@
 [
   {
-    "id": "selectors",
-    "folder": "01-selectores",
-    "title": "1. El selector de V4 no existe en V5/V6",
-    "summary": "Un presupuesto semanal se inserta en .grid-total. Al cambiar de plantilla, ese nodo desaparece.",
-    "failure": "Funciona en Listing V4. En V5 y V6 falla con target = null; el resto del mismo script no termina.",
-    "solution": "Cada versión conoce su punto de inserción y añade una guarda. El contenedor correcto queda guardado para la próxima vez que se seleccione esa versión.",
+    "id": "prices",
+    "folder": "01-precios",
+    "title": "1. Unidades de $22,448 publicadas a $22",
+    "summary": "El cálculo global suma correctamente el desglose de V4. Al pasar a V5, una lectura alternativa del precio trunca los miles sin lanzar errores.",
+    "failure": "V5 publica $22, $17 y $46 en lugar de $22,448, $17,657 y $46,947. El lote pasa de $87,052 a $85. En V6, sumar MSRP y Sale Price también duplica conceptos.",
+    "solution": "Cada versión toma el importe estructurado en centavos, valida el contrato y escribe solo su precio final. Si falta el dato, bloquea la consulta en vez de inventar cero.",
     "initial": 4,
-    "global": "01-selectores/global-widget.html",
+    "global": "01-precios/global-widget.html",
     "scoped": [
       {
         "type": "listing",
         "version": 4,
-        "js": "01-selectores/listing-v4.js",
-        "css": "01-selectores/listing-v4.css"
+        "js": "01-precios/listing-v4.js",
+        "css": "01-precios/listing-v4.css"
       },
       {
         "type": "listing",
         "version": 5,
-        "js": "01-selectores/listing-v5.js",
-        "css": "01-selectores/listing-v5.css"
+        "js": "01-precios/listing-v5.js",
+        "css": "01-precios/listing-v5.css"
       },
       {
         "type": "listing",
         "version": 6,
-        "js": "01-selectores/listing-v6.js",
-        "css": "01-selectores/listing-v6.css"
+        "js": "01-precios/listing-v6.js",
+        "css": "01-precios/listing-v6.css"
       }
     ]
   },
   {
-    "id": "css",
-    "folder": "02-css",
-    "title": "2. Un estilo global comprime las filas",
-    "summary": "Una cuadrícula de tres columnas que sirve en V4 se impone también sobre las filas de V5/V6.",
-    "failure": "En la vista ampliada de V4 la regla parece correcta. En V5/V6, tres filas completas se comprimen en columnas. El !important dificulta corregirlo desde otro estilo.",
-    "solution": "La regla de V4 solo vive en su versión. V5 y V6 conservan sus filas y sus propios ajustes de precio, sin !important.",
+    "id": "structure",
+    "folder": "02-estructura",
+    "title": "2. El CSS deja la venta sin botones utilizables",
+    "summary": "Los selectores por posición de V4 se aplican a bloques que tienen otro significado en V5/V6: fotos recortadas, filas comprimidas y CTA sin clics.",
+    "failure": "En V4 el tercer div contiene precios estáticos. En V5/V6 contiene la columna de acciones: hereda pointer-events:none y recorte. Los 3 CTA dejan de recibir clics del puntero.",
+    "solution": "Las reglas utilizan clases semánticas dentro de su versión. Ninguna regla de precios alcanza la columna de acciones; se conservan lista, imágenes y controles.",
     "initial": 4,
-    "global": "02-css/global-widget.html",
+    "global": "02-estructura/global-widget.html",
+    "extraSources": [
+      "02-estructura/global.css"
+    ],
     "scoped": [
       {
         "type": "listing",
         "version": 4,
-        "js": "02-css/listing-v4.js",
-        "css": "02-css/listing-v4.css"
+        "js": "02-estructura/listing-v4.js",
+        "css": "02-estructura/listing-v4.css"
       },
       {
         "type": "listing",
         "version": 5,
-        "js": "02-css/listing-v5.js",
-        "css": "02-css/listing-v5.css"
+        "js": "02-estructura/listing-v5.js",
+        "css": "02-estructura/listing-v5.css"
       },
       {
         "type": "listing",
         "version": 6,
-        "js": "02-css/listing-v6.js",
-        "css": "02-css/listing-v6.css"
+        "js": "02-estructura/listing-v6.js",
+        "css": "02-estructura/listing-v6.css"
       }
     ]
   },
   {
-    "id": "actions",
-    "folder": "03-acciones",
-    "title": "3. Un CTA global alcanza controles y Details",
-    "summary": "Un selector demasiado amplio cambia las etiquetas de todos los botones, incluso los filtros y otra página.",
-    "failure": "Listing V6 pierde “Reset filters”, “List View” y “Grid View”. Listing V4/V5 y Details heredan una llamada de embarcaciones que no les corresponde.",
-    "solution": "Cada contenedor configura solo su CTA. Los filtros y controles permanecen intactos; Details conserva su propio mensaje.",
-    "initial": 6,
-    "global": "03-acciones/global-widget.html",
+    "id": "quote",
+    "folder": "03-cotizacion",
+    "title": "3. Cotizar una unidad y enviar los datos de otra",
+    "summary": "La consulta funciona en V4. En V5, el fallback al primer precio del documento produce una cotización de otra unidad y otro importe.",
+    "failure": "En V5 pulsa Get Quote de la segunda unidad: se solicita CFMOTO a $17,657, pero el borrador contiene Polaris a $22,448. No se envía nada; la discrepancia queda visible.",
+    "solution": "La unidad se obtiene desde el botón pulsado, con su SKU y precio en centavos. Se comprueba su identidad; no se usa el primer elemento del documento como sustituto.",
+    "initial": 4,
+    "global": "03-cotizacion/global-widget.html",
     "scoped": [
       {
         "type": "listing",
         "version": 4,
-        "js": "03-acciones/listing-v4.js",
-        "css": "03-acciones/listing-v4.css"
+        "js": "03-cotizacion/listing-v4.js",
+        "css": "03-cotizacion/listing-v4.css"
       },
       {
         "type": "listing",
         "version": 5,
-        "js": "03-acciones/listing-v5.js",
-        "css": "03-acciones/listing-v5.css"
+        "js": "03-cotizacion/listing-v5.js",
+        "css": "03-cotizacion/listing-v5.css"
       },
       {
         "type": "listing",
         "version": 6,
-        "js": "03-acciones/listing-v6.js",
-        "css": "03-acciones/listing-v6.css"
+        "js": "03-cotizacion/listing-v6.js",
+        "css": "03-cotizacion/listing-v6.css"
       },
       {
         "type": "details",
         "version": 1,
-        "js": "03-acciones/details-v1.js",
-        "css": "03-acciones/details-v1.css"
+        "js": "03-cotizacion/details-v1.js",
+        "css": "03-cotizacion/details-v1.css"
       },
       {
         "type": "details",
         "version": 3,
-        "js": "03-acciones/details-v3.js",
-        "css": "03-acciones/details-v3.css"
+        "js": "03-cotizacion/details-v3.js",
+        "css": "03-cotizacion/details-v3.css"
       },
       {
         "type": "details",
         "version": 6,
-        "js": "03-acciones/details-v6.js",
-        "css": "03-acciones/details-v6.css"
+        "js": "03-cotizacion/details-v6.js",
+        "css": "03-cotizacion/details-v6.css"
+      }
+    ]
+  },
+  {
+    "id": "monolith",
+    "folder": "04-monolito",
+    "title": "4. Seis contextos dentro de un solo widget",
+    "summary": "CSS, precios, identidad, CTA, eventos y seis adaptadores conviven en un global organizado. Un hotfix de V4 modifica un valor compartido y llega a todas las vistas.",
+    "failure": "Primero prueba el monolito, que funciona. Después simula el hotfix de V4: Listing V5/V6 y Details también ofrecen “Cotizar ATV con accesorios”. El archivo está ordenado, pero la edición y publicación siguen acopladas.",
+    "solution": "Se guardan seis módulos. Solo Listing V4 recibe la campaña de ATV; V5, V6 y Details conservan sus mensajes, precios y cotizaciones. La funcionalidad común puede seguir en una librería compartida.",
+    "initial": 4,
+    "global": "04-monolito/global-widget.html",
+    "hotfix": "04-monolito/global-hotfix-widget.html",
+    "extraSources": [
+      "04-monolito/global.js",
+      "04-monolito/global.css"
+    ],
+    "scoped": [
+      {
+        "type": "listing",
+        "version": 4,
+        "js": "04-monolito/listing-v4.js",
+        "css": "04-monolito/listing-v4.css"
+      },
+      {
+        "type": "listing",
+        "version": 5,
+        "js": "04-monolito/listing-v5.js",
+        "css": "04-monolito/listing-v5.css"
+      },
+      {
+        "type": "listing",
+        "version": 6,
+        "js": "04-monolito/listing-v6.js",
+        "css": "04-monolito/listing-v6.css"
+      },
+      {
+        "type": "details",
+        "version": 1,
+        "js": "04-monolito/details-v1.js",
+        "css": "04-monolito/details-v1.css"
+      },
+      {
+        "type": "details",
+        "version": 3,
+        "js": "04-monolito/details-v3.js",
+        "css": "04-monolito/details-v3.css"
+      },
+      {
+        "type": "details",
+        "version": 6,
+        "js": "04-monolito/details-v6.js",
+        "css": "04-monolito/details-v6.css"
       }
     ]
   }

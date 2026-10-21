@@ -1,0 +1,21 @@
+<script>
+// REGRESIÓN REPRODUCIBLE. No utilizar en un sitio comercial.
+// La rutina se escribió para el desglose de V4. Funciona allí.
+(function ($) {
+  $('.vehicle-card').each(function () {
+    const rows = [...this.querySelectorAll('.price-breakdown td')];
+    let amount;
+    if (rows.length) {
+      amount = rows.reduce((sum, cell) => sum + Number(cell.textContent.replace(/[^0-9.-]/g, '')), 0);
+    } else {
+      // Fallback heredado: parseFloat se detiene en la coma de miles.
+      // V5: "$22,448 OUR PRICE" -> 22. No hay excepción JavaScript.
+      amount = parseFloat(this.querySelector('.vehicle-price').textContent.replace('$', ''));
+    }
+    this.querySelector('.vehicle-price').textContent = InventoryLab.usd(Math.round(amount * 100));
+    this.dataset.price = String(amount); // El error alcanza también orden y filtros.
+  });
+  InventoryLab.auditPrices('Fallo global: precio recalculado desde el DOM de V4');
+})(jQuery);
+
+</script>

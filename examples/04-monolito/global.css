@@ -1,0 +1,20 @@
+/* ============================================================
+   ESTILOS COMPARTIDOS — consumidos por las SEIS ramas del archivo.
+   ============================================================ */
+.inventory-page .vehicle-action { border-radius: 4px; }
+.inventory-page .demo-module-note { padding: 12px; background: #edf7f6; border-left: 3px solid #007f86; color: #175752; font: 12px/1.7 Arial, sans-serif; }
+/* LISTING V4 */
+.inventory-v4 .grid-total .vehicle-price { font-size: 24px; }
+.inventory-v4 .reference-actions { padding-inline: 20px; }
+/* LISTING V5 */
+.inventory-v5 .compact-pricing .vehicle-price { font-size: 27px; }
+.inventory-v5 .reference-description { box-shadow: 0 2px 3px #0002; }
+/* LISTING V6 */
+.inventory-v6 .all-in-price .vehicle-price { font-size: 29px; }
+.inventory-v6 .promotion { letter-spacing: .2px; }
+/* DETAILS V1 */
+.inventory-page[data-inventory-type="details"][data-version="1"] .detail-price { color: #007f86; }
+/* DETAILS V3 */
+.inventory-page[data-inventory-type="details"][data-version="3"] .detail-facts { border-color: #b8cbd0; }
+/* DETAILS V6 */
+.inventory-page[data-inventory-type="details"][data-version="6"] .detail-price { color: #345e8c; }

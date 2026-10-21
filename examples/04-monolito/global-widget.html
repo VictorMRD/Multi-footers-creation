@@ -1,0 +1,165 @@
+<script>
+// ============================================================
+// WIDGET GLOBAL: estilos + dinero + identidad + eventos + CTA
+// + adaptadores de seis contextos, en un único campo desplegable.
+// Está ordenado y funciona. Sigue siendo una unidad de edición/publicación.
+// ============================================================
+(function ($) {
+  const page = document.querySelector('.inventory-page');
+  const type = page.dataset.inventoryType;
+  const version = Number(page.dataset.version);
+  const shared = {
+    // Una edición aquí alcanza a Listing 4/5/6 y Details 1/3/6.
+    ctaText: 'Solicitar información · demo',
+    accent: '#007f86'
+  };
+  const css = `
+/* ============================================================
+   ESTILOS COMPARTIDOS — consumidos por las SEIS ramas del archivo.
+   ============================================================ */
+.inventory-page .vehicle-action { border-radius: 4px; }
+.inventory-page .demo-module-note { padding: 12px; background: #edf7f6; border-left: 3px solid #007f86; color: #175752; font: 12px/1.7 Arial, sans-serif; }
+/* LISTING V4 */
+.inventory-v4 .grid-total .vehicle-price { font-size: 24px; }
+.inventory-v4 .reference-actions { padding-inline: 20px; }
+/* LISTING V5 */
+.inventory-v5 .compact-pricing .vehicle-price { font-size: 27px; }
+.inventory-v5 .reference-description { box-shadow: 0 2px 3px #0002; }
+/* LISTING V6 */
+.inventory-v6 .all-in-price .vehicle-price { font-size: 29px; }
+.inventory-v6 .promotion { letter-spacing: .2px; }
+/* DETAILS V1 */
+.inventory-page[data-inventory-type="details"][data-version="1"] .detail-price { color: #007f86; }
+/* DETAILS V3 */
+.inventory-page[data-inventory-type="details"][data-version="3"] .detail-facts { border-color: #b8cbd0; }
+/* DETAILS V6 */
+.inventory-page[data-inventory-type="details"][data-version="6"] .detail-price { color: #345e8c; }
+`;
+  $('<style data-demo="entire-monolith">').text(css).appendTo('head');
+
+  // ==========================================================
+  // UTILIDADES: importe estructurado, escritura y eventos
+  // ==========================================================
+  function readCents(unit) {
+    const cents = Number(unit.dataset.unitPriceCents);
+    if (!Number.isSafeInteger(cents) || cents <= 0) throw new Error('Precio estructurado inválido.');
+    return cents;
+  }
+  function writePrice(unit, selector) {
+    const label = unit.querySelector(selector);
+    if (!label) throw new Error('Contrato DOM incumplido: ' + selector);
+    label.textContent = InventoryLab.usd(readCents(unit));
+  }
+  function markContext(label) {
+    $('.demo-module-note').remove();
+    $('<p class="demo-module-note">').text('Activo: ' + label + '. El resto de ramas permanece en el mismo archivo global.').prependTo(page);
+  }
+  function setButtons(selector) {
+    $(selector).text(shared.ctaText).css({background: shared.accent, color: '#fff'});
+  }
+  function installQuoteHandler(unitSelector) {
+    if (window.demoQuoteHandler) document.removeEventListener('click', window.demoQuoteHandler, true);
+    window.demoQuoteHandler = function (event) {
+      const button = event.target.closest('.vehicle-action');
+      if (!button) return;
+      const unit = button.closest(unitSelector);
+      if (!unit) return;
+      event.preventDefault(); event.stopImmediatePropagation();
+      try {
+        InventoryLab.showQuote(unit, {
+          sku: unit.dataset.stock,
+          name: unit.querySelector('h2, h1').textContent.trim(),
+          cents: readCents(unit)
+        }, 'Cotización global con adaptador ' + type + ' V' + version);
+      } catch (error) { InventoryLab.quoteUnavailable(unit, error.message); }
+    };
+    document.addEventListener('click', window.demoQuoteHandler, true);
+  }
+
+  // ==========================================================
+  // LISTING / V4: tarjetas, precios finales y acciones
+  // ==========================================================
+  function listingV4() {
+    document.querySelectorAll('.inventory-v4 .vehicle-card').forEach(unit => {
+      writePrice(unit, '.grid-total .vehicle-price');
+      unit.dataset.activeAdapter = 'listing-v4';
+    });
+    setButtons('.inventory-v4 .reference-actions .primary-action');
+    installQuoteHandler('.vehicle-card');
+    markContext('Listing V4');
+    InventoryLab.auditPrices('Monolito: Listing V4');
+  }
+
+  // ==========================================================
+  // LISTING / V5: filas, precio compacto y Get Quote
+  // ==========================================================
+  function listingV5() {
+    document.querySelectorAll('.inventory-v5 .vehicle-card').forEach(unit => {
+      writePrice(unit, '.compact-pricing .vehicle-price');
+      unit.dataset.activeAdapter = 'listing-v5';
+    });
+    setButtons('.inventory-v5 .reference-actions .primary-action');
+    installQuoteHandler('.vehicle-card');
+    markContext('Listing V5');
+    InventoryLab.auditPrices('Monolito: Listing V5');
+  }
+
+  // ==========================================================
+  // LISTING / V6: All-In Price, promociones y consulta
+  // ==========================================================
+  function listingV6() {
+    document.querySelectorAll('.inventory-v6 .vehicle-card').forEach(unit => {
+      writePrice(unit, '.all-in-price .vehicle-price');
+      unit.dataset.activeAdapter = 'listing-v6';
+    });
+    setButtons('.inventory-v6 .reference-actions .primary-action');
+    installQuoteHandler('.vehicle-card');
+    markContext('Listing V6');
+    InventoryLab.auditPrices('Monolito: Listing V6');
+  }
+
+  // ==========================================================
+  // DETAILS / V1: ficha, importe y botón de contacto
+  // ==========================================================
+  function detailsV1() {
+    writePrice(page, '.detail-price');
+    setButtons('.inventory-page > .vehicle-action');
+    installQuoteHandler('.inventory-page');
+    markContext('Details V1');
+    InventoryLab.auditPrices('Monolito: Details V1');
+  }
+
+  // ==========================================================
+  // DETAILS / V3: ficha, importe y ficha técnica
+  // ==========================================================
+  function detailsV3() {
+    writePrice(page, '.detail-price');
+    setButtons('.inventory-page > .vehicle-action');
+    installQuoteHandler('.inventory-page');
+    markContext('Details V3');
+    InventoryLab.auditPrices('Monolito: Details V3');
+  }
+
+  // ==========================================================
+  // DETAILS / V6: ficha, importe y contacto especializado
+  // ==========================================================
+  function detailsV6() {
+    writePrice(page, '.detail-price');
+    setButtons('.inventory-page > .vehicle-action');
+    installQuoteHandler('.inventory-page');
+    markContext('Details V6');
+    InventoryLab.auditPrices('Monolito: Details V6');
+  }
+
+  // ==========================================================
+  // ROUTER: cualquier versión nueva requiere editar este bloque.
+  // ==========================================================
+  const routes = {
+    listing: {4: listingV4, 5: listingV5, 6: listingV6},
+    details: {1: detailsV1, 3: detailsV3, 6: detailsV6}
+  };
+  const mount = routes[type]?.[version];
+  if (mount) mount();
+})(jQuery);
+
+</script>
