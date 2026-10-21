@@ -1,0 +1,53 @@
+// Fixed listing templates. Only version-specific CSS/JS are editable in the dashboard.
+const listingReferences = {
+  4: { brand: 'CRAIG POWERSPORTS', title: 'Inventory', accent: '#ed1024', layout: 'grid', filters: ['Make','Year','Price','Monthly Payment','Vehicle Type','Condition','Featured','Dry Weight','Availability'], products: [
+    {name:'2026 Yamaha TT-R110E',make:'Yamaha',year:'2026',category:'Motorcycle',price:3538,msrp:2449,stock:'YD3407',image:'bike',fees:[['Price',2449],['Doc Fee',199],['Freight',595],['Assembly',295]],payment:82,location:'Craig Powersports',photos:4},
+    {name:'2025 Polaris Industries RZR',make:'Polaris',year:'2025',category:'UTV',price:23980,msrp:27999,stock:'PZ7598',image:'utv-blue',fees:[['Price',23980]],payment:547,savings:4019,featured:true,location:'Craig Powersports',photos:6},
+    {name:'2025 Can-Am Maverick',make:'Can-Am',year:'2025',category:'UTV',price:15980,msrp:17699,stock:'BU0357',image:'utv-black',fees:[['Price',15980]],payment:365,savings:1719,featured:true,location:'Craig Powersports',photos:6}
+  ]},
+  5: {brand:'TEAM KARL MALONE POWERSPORTS',title:'New Inventory',accent:'#f51c2b',layout:'list',filters:['Make','Year','Category','Price','Odometer','Fuel Type','Location','Engine Hours'],products:[
+    {name:'2026 POLARIS Patriot 9R RMK Khaos 155',make:'Polaris',year:'2026',category:'SNOWMOBILE',price:22448,msrp:25544,stock:'P60553',image:'snowmobile',color:'GLOSS BLACK / BLUE',savings:3096,location:'Karl Malone Plaza Cycle',photos:18},
+    {name:'2025 CFMOTO UFORCE U10 XL Pro',make:'CFMOTO',year:'2025',category:'UTV',price:17657,msrp:21127,stock:'C02617-C-ACCY',image:'utv-blue',color:'BLACK',savings:3470,location:'Karl Malone Plaza Cycle',photos:5},
+    {name:'2025 Polaris 850 RMK SP 155',make:'Polaris',year:'2025',category:'SNOWMOBILE',price:46947,msrp:34745,stock:'P32524-C',image:'snowmobile-dark',color:'BLACK',location:'Karl Malone Plaza Cycle',photos:6}
+  ]},
+  6: {brand:'B&E MARINE',title:'All Inventory',accent:'#fc6d1c',layout:'list',filters:['Make','Year','Price','Monthly Payment','Category','Condition','Location','Featured','Engine Hours','Interior Color','Exterior Color','Fuel Type','Seats','Length','Fresh Water','Engine','Engine Manufacturer','Engine Horsepower','Hull Type','Availability'],products:[
+    {name:'2026 - 2027 Boston Whaler 130 SS w/ 40 HP Mercury',make:'Boston Whaler',year:'2026',category:'CenterConsole',price:20495,msrp:22629,stock:'ORDER130SS',image:'boat',fees:[['MSRP',22629],['Sale Price',19995],['Factory Incentive',-2500],['Processing Fee',251],['Factory Freight',1277],['Prep & Rigging',1363],['Destination',109]],savings:2134,promo:'SPECIAL PROMOTION!',location:'Michigan City, IN',photos:3},
+    {name:'2026 Sea Ray SDX 230',make:'Sea Ray',year:'2026',category:'Bowrider',price:145151,msrp:158517,stock:'2612',image:'boat-blue',fees:[['MSRP',158517],['Sale Price',149900],['Factory Incentive',-5000],['Processing Fee',251]],savings:13366,promo:'$5,000 FACTORY INCENTIVE!',featured:true,location:'Michigan City, IN',photos:16},
+    {name:'2026 Boston Whaler 250 Dauntless',make:'Boston Whaler',year:'2026',category:'CenterConsole',price:195702,msrp:203702,stock:'2604',image:'boat',fees:[['MSRP',203702],['Sale Price',195702]],savings:8000,promo:'$8,000 FACTORY INCENTIVE!',featured:true,location:'Michigan City, IN',photos:12}
+  ]}
+};
+const money = value => (value < 0 ? '-$' : '$') + Math.abs(value).toLocaleString('en-US');
+function referenceFilters(config) {
+  return `<aside class="inventory-filters" aria-label="Inventory filters">${config.filters.map(name => {
+    let options;
+    if(name==='Make') options=[...new Set(config.products.map(p=>p.make))];
+    else if(name==='Year') options=[...new Set(config.products.map(p=>p.year))];
+    else if(name==='Category'||name==='Vehicle Type') options=[...new Set(config.products.map(p=>p.category))];
+    else if(name==='Condition') options=['New'];
+    else if(name==='Location') options=[...new Set(config.products.map(p=>p.location))];
+    else if(name==='Featured') options=['Featured only'];
+    else if(name==='Price') options=['Under $20,000','$20,000 and above'];
+    return `<details class="filter-group"><summary>${name}<span>⌄</span></summary>${options?options.map(option=>`<label><input type="checkbox" data-filter="${name}" value="${option}"> ${option}</label>`).join(''):'<p>No additional values in this demo.</p>'}</details>`;
+  }).join('')}<div class="filter-brand">${config.brand}</div><button type="button" class="reset-filters">Reset filters</button></aside>`;
+}
+function referenceActions(version) {
+  return `<div class="reference-actions"><button class="vehicle-action primary-action" data-action="${version===5?'Get Quote':'Request Info'}">♧ &nbsp; ${version===5?'Get Quote':'Request Info'}</button>${version===4?'<button class="quote-action" data-action="Customize Your Quote">＄ Customize Your Quote</button>':''}${version!==5?'<button data-action="Financing">ⓢ &nbsp; Financing</button>':''}${version===6?'<button data-action="Reserve Now">⚿ &nbsp; Reserve Now</button>':''}${version!==5?'<button data-action="View Details">☷ &nbsp; View Details</button>':''}<button data-action="Click To Call">☎ &nbsp; Click To Call</button></div>`;
+}
+function referenceCard(product,version,index) {
+  const p=product;
+  const compare=`<label class="compare-models">Compare Models <input type="checkbox" aria-label="Compare ${p.name}"></label>`;
+  const media=`<div class="reference-media">${p.promo?`<div class="promotion">${p.promo}</div>`:''}<div class="product-photo"><img src="assets/${p.image}.svg" alt="${p.name} — demonstration illustration"><span class="photo-count">▣ ${p.photos}</span></div></div>`;
+  const fees=`<table class="price-breakdown"><tbody>${(p.fees||[]).map(([name,value])=>`<tr><th>${name}</th><td class="${value<0?'discount':''}">${money(value)}</td></tr>`).join('')}</tbody></table>`;
+  const name=`<h2>${p.name}</h2>`;
+  const savings=p.savings?`<div class="savings">You Save ${money(p.savings)}</div>`:'';
+  const print='<button class="print-button" data-action="Print">▧ Print</button>';
+  let body;
+  if(version===4) body=`${p.featured?'<span class="featured-ribbon">★ &nbsp; Featured</span>':''}${media}${compare}<div class="reference-description">${name}<div class="product-location">♦ &nbsp; ${p.location}</div></div><div class="grid-pricing">${fees}<div class="grid-total"><small>Stock #<br><b>${p.stock}</b></small><span>Total</span><strong class="vehicle-price">${money(p.price)} <em>OUR<br>PRICE</em></strong>${savings}<div class="monthly">Payments From<br><b>${money(p.payment)}/mo</b></div></div></div><p class="pricing-note">Transparent pricing: all fees included except tax</p>${print}<div class="product-spec-strip"><span>Fuel Type<b>Gas</b></span><span>Width<b>64 in</b></span><span>VIN<b>DEMO${index+1}…</b></span><span>Height<b>5.98</b></span></div>${referenceActions(version)}`;
+  else if(version===5) body=`<div class="reference-description">${print}${name}<div class="product-category">${p.category}</div><small class="stock-label">Stock #: ${p.stock}</small><div class="compact-pricing"><div><small class="stock-label">MSRP <s>${money(p.msrp)}</s></small><strong class="vehicle-price">${money(p.price)} <em>OUR<br>PRICE</em></strong>${savings}</div><div class="compact-facts"><p><b>Condition</b> New</p><p><b>Color</b> ${p.color}</p><div class="product-location">♦ &nbsp; ${p.location}</div></div></div></div>${media}<div class="action-column">${compare}${referenceActions(version)}</div>`;
+  else body=`${p.featured?'<span class="featured-marker">★</span>':''}<div class="reference-description">${print}${p.featured?'<small class="featured-label">Featured</small>':''}${name}<div class="product-meta">${p.category} &nbsp; Stock #: ${p.stock} &nbsp; MSRP <s>${money(p.msrp)}</s></div><div class="marine-pricing"><div>${fees}<div class="all-in-price"><span>All-In Price</span><strong class="vehicle-price">${money(p.price)}</strong></div></div><div class="marine-savings">${savings}<div class="product-location">♦ &nbsp; ${p.location}</div></div></div></div>${media}<div class="action-column">${compare}${referenceActions(version)}</div>`;
+  return `<article class="vehicle-card reference-card ${p.featured?'is-featured':''}" data-name="${p.name.toLowerCase()}" data-price="${p.price}" data-make="${p.make}" data-year="${p.year}" data-category="${p.category}" data-condition="New" data-location="${p.location}" data-featured="${!!p.featured}">${body}</article>`;
+}
+function referenceListingMarkup(version) {
+  const config=listingReferences[version];
+  return `<main class="inventory-page reference-inventory inventory-v${version}" data-version="${version}"><header class="reference-header"><strong>${config.brand}</strong><nav aria-label="Dealer navigation"><span>All Inventory</span><span>Sales</span><span>Services</span><span>About Us</span><span>Contact Us</span></nav><small>Layout demonstration</small></header><div class="inventory-reference-body">${referenceFilters(config)}<section class="inventory-results"><h1>${config.title}</h1><div class="reference-toolbar"><div class="view-switch"><button data-view="list" aria-pressed="${config.layout==='list'}">▤ List View</button><button data-view="grid" aria-pressed="${config.layout==='grid'}">▦ Grid View</button></div><input id="vehicle-search" aria-label="Search inventory" placeholder="Search"><select id="vehicle-sort" aria-label="Sort inventory"><option value="default">Sort By:</option><option value="asc">Price: Low to high</option><option value="desc">Price: High to low</option></select></div><div class="result-summary"><span class="compare-count" aria-live="polite">0 models selected</span><span id="vehicle-count" aria-live="polite">Showing 1-${config.products.length} of ${config.products.length} results</span></div><div class="vehicle-grid reference-vehicles ${config.layout}-view">${config.products.map((p,i)=>referenceCard(p,version,i)).join('')}</div><p class="inventory-empty" hidden>No vehicles match your filters.</p><p class="demo-disclaimer">Demonstration inventory · Illustrations and sample data · No requests or payments are sent.</p></section></div><dialog class="inventory-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close dialog">×</button></form><h2 class="dialog-title"></h2><p class="dialog-description"></p><button class="dialog-dismiss">Close</button></dialog></main>`;
+}

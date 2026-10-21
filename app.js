@@ -13,7 +13,8 @@ const vehicles = [
 function carIllustration(color, className) {
   return `<svg class="${className}" viewBox="0 0 400 210" role="img" aria-label="Vehicle illustration"><rect width="400" height="210" fill="#edf1f3"/><ellipse cx="200" cy="166" rx="155" ry="12" fill="#d4dce0"/><path d="M55 128 L91 116 L133 68 Q140 61 158 61 L251 61 Q268 63 285 84 L313 115 L345 127 L353 153 L45 153 Z" fill="${color}"/><path d="M108 115 L143 74 L193 74 L193 115 Z M204 74 L250 74 L283 115 L204 115 Z" fill="#bdd5df"/><path d="M48 133 L81 133 L81 143 L47 143 M318 131 L348 135 L350 144 L318 144" fill="#fff5cb"/><path d="M199 119 L199 146 M110 121 L99 145 M286 121 L295 145" stroke="#ffffff44"/><circle cx="111" cy="151" r="25" fill="#26343e"/><circle cx="111" cy="151" r="13" fill="#bec9cf"/><circle cx="293" cy="151" r="25" fill="#26343e"/><circle cx="293" cy="151" r="13" fill="#bec9cf"/></svg>`;
 }
-function inventoryMarkup(type) {
+function inventoryMarkup(type, version) {
+  if (type === 'listing' && listingReferences[version]) return referenceListingMarkup(version);
   const header = '<header class="inventory-header"><strong class="dealer-brand">DEALER MOTORS</strong><span>Find your next vehicle</span></header>';
   if(type === 'details') return `<main class="inventory-page">${header}<p>Inventory / Toyota RAV4</p><h1>${vehicles[0].name}</h1><p>Pre-owned · Stock #DM1042</p>${carIllustration(vehicles[0].color,'vehicle-detail-image')}<h2>Ready for your next adventure.</h2><div class="detail-price">$32,995</div><div class="detail-facts"><span>Mileage: 12,450 mi</span><span>Drivetrain: AWD</span><span>Transmission: Automatic</span><span>Fuel: Gasoline</span></div><button class="vehicle-action">Check availability</button></main>`;
   return `<main class="inventory-page">${header}<h1>Pre-owned inventory</h1><p>Find the right vehicle for your next chapter.</p><div class="inventory-toolbar"><input id="vehicle-search" aria-label="Search inventory" placeholder="Search make or model…"><select id="vehicle-sort" aria-label="Sort inventory"><option value="default">Sort: Featured</option><option value="asc">Price: Low to high</option><option value="desc">Price: High to low</option></select></div><p id="vehicle-count">4 vehicles available</p><div class="vehicle-grid">${vehicles.map(v=>`<article class="vehicle-card" data-name="${v.name.toLowerCase()}" data-price="${v.price}">${carIllustration(v.color,'vehicle-image')}<div class="vehicle-body"><span class="vehicle-condition">Pre-owned · In stock</span><h2>${v.name}</h2><div class="vehicle-specs">${v.miles} mi · Automatic · ${v.drive}</div><div class="vehicle-price">$${v.price.toLocaleString('en-US')}</div><div class="vehicle-footer"><button class="vehicle-action">Check availability</button><small>${v.fuel}</small></div></div></article>`).join('')}</div><p class="inventory-empty" hidden>No vehicles match your search.</p></main>`;
@@ -21,14 +22,41 @@ function inventoryMarkup(type) {
 function initializeInventory() {
   const search=document.querySelector('#vehicle-search'), sort=document.querySelector('#vehicle-sort');
   const cards=[...document.querySelectorAll('.vehicle-card')];
-  function filter(){let count=0;cards.forEach(card=>{card.hidden=!card.dataset.name.includes(search.value.toLowerCase());if(!card.hidden)count++;});document.querySelector('#vehicle-count').textContent=count+' vehicles available';document.querySelector('.inventory-empty').hidden=count>0;}
-  search?.addEventListener('input',filter);
+  const filters=[...document.querySelectorAll('[data-filter]')];
+  function filter(){
+    const groups={}; filters.filter(input=>input.checked).forEach(input=>(groups[input.dataset.filter]??=[]).push(input.value));
+    const attributes={'Make':'make','Year':'year','Category':'category','Vehicle Type':'category','Condition':'condition','Location':'location'};
+    let count=0;
+    cards.forEach(card=>{
+      const matches=Object.entries(groups).every(([group,values])=>values.some(value=>{
+        if(group==='Featured')return card.dataset.featured==='true';
+        if(group==='Price')return value==='Under $20,000'?Number(card.dataset.price)<20000:Number(card.dataset.price)>=20000;
+        return card.dataset[attributes[group]]===value;
+      }));
+      card.hidden=!card.dataset.name.includes(search.value.toLowerCase())||!matches;if(!card.hidden)count++;
+    });
+    document.querySelector('#vehicle-count').textContent=document.querySelector('.reference-inventory')?`Showing ${count?1:0}-${count} of ${cards.length} results`:`${count} vehicles available`;
+    document.querySelector('.inventory-empty').hidden=count>0;
+  }
+  search?.addEventListener('input',filter);filters.forEach(input=>input.addEventListener('change',filter));
+  document.querySelector('.reset-filters')?.addEventListener('click',()=>{filters.forEach(input=>input.checked=false);search.value='';filter();});
   sort?.addEventListener('change',()=>{const ordered=sort.value==='default'?cards:[...cards].sort((a,b)=>sort.value==='asc'?a.dataset.price-b.dataset.price:b.dataset.price-a.dataset.price);ordered.forEach(card=>document.querySelector('.vehicle-grid').append(card));});
+  document.querySelectorAll('[data-view]').forEach(button=>button.addEventListener('click',()=>{const grid=document.querySelector('.vehicle-grid');grid.classList.toggle('list-view',button.dataset.view==='list');grid.classList.toggle('grid-view',button.dataset.view==='grid');document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));}));
+  document.querySelectorAll('.compare-models input').forEach(input=>input.addEventListener('change',()=>{document.querySelector('.compare-count').textContent=document.querySelectorAll('.compare-models input:checked').length+' models selected';}));
+  const dialog=document.querySelector('.inventory-dialog');
+  document.querySelectorAll('[data-action]').forEach(button=>button.addEventListener('click',()=>{
+    const name=button.closest('.vehicle-card').querySelector('h2').textContent;
+    dialog.querySelector('.dialog-title').textContent=button.dataset.action;
+    dialog.querySelector('.dialog-description').textContent=name+' — Demonstration only. No request, call, reservation or payment has been sent.';
+    if(button.dataset.action==='View Details')dialog.querySelector('.dialog-description').textContent=name+' · New · Stock # '+button.closest('.vehicle-card').querySelector('.stock-label, .product-meta, .grid-total small')?.textContent+' · Sample inventory details.';
+    if(button.dataset.action==='Print')dialog.querySelector('.dialog-description').textContent=name+' — Print action demonstration. No document has been printed.';dialog.showModal();
+  }));
+  dialog?.querySelector('.dialog-dismiss').addEventListener('click',()=>dialog.close());
 }
 function defaults() {
   return Object.fromEntries(definitions.map(d => [d.id, { selected: 1, versions: Object.fromEntries(d.versions.map(v => [v, {
-    js: `// ${d.title} — Version ${v}\n// Applied to the fixed inventory page.\n\ndocument.querySelectorAll('.vehicle-action').forEach(button => {\n  button.addEventListener('click', () => {\n    button.textContent = 'Request received ✓';\n  });\n});`,
-    css: `/* ${d.title} — Version ${v} */\n/* Style the existing inventory. HTML is managed by the site. */\n\n.inventory-page { --accent: #007f86; }\n.vehicle-price, .detail-price { color: var(--accent); }\n.vehicle-action { background: var(--accent); border-color: var(--accent); }`
+    js: d.id === 'listing' && listingReferences[v] ? `// Inventory Listing — Version ${v}\n// Runs after the fixed inventory is ready.\n// Built-in search, filters and actions are provided by the page.\n\ndocument.querySelector('.inventory-page').dataset.customVersion = '${v}';\n\n// Example: document.querySelectorAll('.vehicle-price')\n//   .forEach(price => price.style.fontWeight = '800');` : `// ${d.title} — Version ${v}\n// Applied to the fixed inventory page.\n\ndocument.querySelectorAll('.vehicle-action').forEach(button => {\n  button.addEventListener('click', () => {\n    button.textContent = 'Request received ✓';\n  });\n});`,
+    css: d.id === 'listing' && listingReferences[v] ? `/* Inventory Listing — Version ${v} */\n/* Fixed layout based on the supplied reference. */\n\n.inventory-page { --inventory-accent: ${listingReferences[v].accent}; }\n/* Customize .reference-card, .vehicle-price or .reference-actions here. */` : `/* ${d.title} — Version ${v} */\n/* Style the existing inventory. HTML is managed by the site. */\n\n.inventory-page { --accent: #007f86; }\n.vehicle-price, .detail-price { color: var(--accent); }\n.vehicle-action { background: var(--accent); border-color: var(--accent); }`
   }])) } ]));
 }
 function validate(data) {
@@ -36,6 +64,10 @@ function validate(data) {
     const item = data?.[d.id];
     if (!item || !d.versions.includes(item.selected)) throw new Error('Invalid selected version');
     for (const v of d.versions) for (const field of ['js','css']) if (typeof item.versions?.[v]?.[field] !== 'string') throw new Error('Invalid version code');
+  }
+  for (const v of [4,5,6]) {
+    if (data.listing.versions[v].css === `/* Inventory Listing — Version ${v} */\n/* Style the existing inventory. HTML is managed by the site. */\n\n.inventory-page { --accent: #007f86; }\n.vehicle-price, .detail-price { color: var(--accent); }\n.vehicle-action { background: var(--accent); border-color: var(--accent); }`) data.listing.versions[v].css=defaults().listing.versions[v].css;
+    if (data.listing.versions[v].js === `// Inventory Listing — Version ${v}\n// Applied to the fixed inventory page.\n\ndocument.querySelectorAll('.vehicle-action').forEach(button => {\n  button.addEventListener('click', () => {\n    button.textContent = 'Request received ✓';\n  });\n});`) data.listing.versions[v].js=defaults().listing.versions[v].js;
   }
   return Object.fromEntries(definitions.map(d => [d.id, {selected: data[d.id].selected, versions: Object.fromEntries(d.versions.map(v => [v, {js:data[d.id].versions[v].js, css:data[d.id].versions[v].css}]))}]));
 }
@@ -50,7 +82,7 @@ function render() {
   document.querySelector('#workspace').replaceChildren();
   definitions.forEach((d, index) => {
     const panel = document.createElement('section'); panel.className = 'panel';
-    panel.innerHTML = `<div class="panel-top"><span class="panel-icon">${d.icon}</span><div><h3>${d.title}</h3><p>${d.subtitle}</p></div><span class="panel-number">0${index+1}</span></div><div class="version-field"><label for="version-${d.id}">${d.title}</label><div class="select-wrapper"><select id="version-${d.id}">${d.versions.map(v => `<option value="${v}">Version ${v}</option>`).join('')}</select></div><p>Select a version to edit its independent code and styles.</p></div><div class="editor-widget"><div class="widget-heading"><span>〈/〉</span> Custom CSS & JavaScript <small>⌃</small></div><div class="tabs" role="tablist" aria-label="${d.title} code language"><button class="tab active" data-lang="js" role="tab">JavaScript</button><button class="tab" data-lang="css" role="tab">CSS</button><span class="language-label">.js</span></div><div class="code-container"><div class="line-numbers" aria-hidden="true"></div><textarea class="code-editor" spellcheck="false" aria-label="${d.title} JavaScript code"></textarea></div><div class="editor-status"><span class="version-status"></span><span>UTF-8 &nbsp; · &nbsp; Editable</span></div></div><div class="panel-actions"><span class="save-status">✓ All changes saved</span><button class="button primary run">▷ &nbsp; Run preview</button></div><div class="preview"><div class="preview-heading"><span>Inventory preview · fixed HTML</span><span class="preview-status">Isolated sandbox</span></div><iframe title="${d.title} preview" sandbox="allow-scripts"></iframe></div>`;
+    panel.innerHTML = `<div class="panel-top"><span class="panel-icon">${d.icon}</span><div><h3>${d.title}</h3><p>${d.subtitle}</p></div><span class="panel-number">0${index+1}</span></div><div class="version-field"><label for="version-${d.id}">${d.title}</label><div class="select-wrapper"><select id="version-${d.id}">${d.versions.map(v => `<option value="${v}">Version ${v}</option>`).join('')}</select></div><p>Select a version to edit its independent code and styles.</p></div><div class="editor-widget"><div class="widget-heading"><span>〈/〉</span> Custom CSS & JavaScript <small>⌃</small></div><div class="tabs" role="tablist" aria-label="${d.title} code language"><button class="tab active" data-lang="js" role="tab">JavaScript</button><button class="tab" data-lang="css" role="tab">CSS</button><span class="language-label">.js</span></div><div class="code-container"><div class="line-numbers" aria-hidden="true"></div><textarea class="code-editor" spellcheck="false" aria-label="${d.title} JavaScript code"></textarea></div><div class="editor-status"><span class="version-status"></span><span>UTF-8 &nbsp; · &nbsp; Editable</span></div></div><div class="panel-actions"><span class="save-status">✓ All changes saved</span><button class="button primary run">▷ &nbsp; Run preview</button></div><div class="preview"><div class="preview-heading"><span>Inventory preview · fixed HTML</span><button class="expand-preview" type="button" aria-expanded="false">⛶ Expand preview</button><span class="preview-status">Isolated sandbox</span></div><iframe title="${d.title} preview" sandbox="allow-scripts"></iframe></div>`;
     document.querySelector('#workspace').append(panel);
     let language = 'js'; const editor = panel.querySelector('textarea'); const select = panel.querySelector('select');
     const current = () => state[d.id].versions[state[d.id].selected];
@@ -60,7 +92,7 @@ function render() {
       const code = current();
       // A fresh opaque-origin frame resets the previous version's scripts and styles.
       const frame = panel.querySelector('iframe');
-      const documentCode = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${inventoryStyles}</style><style>${code.css}</style></head><body>${inventoryMarkup(d.id)}<script>(${initializeInventory.toString()})();try { (0,eval)(${JSON.stringify(code.js).replace(/</g,'\\u003c')}); } catch(e) { const p = document.createElement('pre'); p.style.cssText='color:#b32d2e;white-space:pre-wrap;padding:12px;font:12px monospace'; p.textContent='JavaScript error: '+e.message; document.body.append(p); }<\/script></body></html>`;
+      const documentCode = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${inventoryStyles}</style><link rel="stylesheet" href="inventory-layouts.css"><style>${code.css}</style></head><body>${inventoryMarkup(d.id, state[d.id].selected)}<script>(${initializeInventory.toString()})();try { (0,eval)(${JSON.stringify(code.js).replace(/</g,'\\u003c')}); } catch(e) { const p = document.createElement('pre'); p.style.cssText='color:#b32d2e;white-space:pre-wrap;padding:12px;font:12px monospace'; p.textContent='JavaScript error: '+e.message; document.body.append(p); }<\/script></body></html>`;
       const fresh = frame.cloneNode(false); fresh.srcdoc = documentCode; frame.replaceWith(fresh);
       panel.querySelector('.preview-status').textContent = `Version ${state[d.id].selected} · Preview updated`;
     }
@@ -74,6 +106,10 @@ function render() {
     editor.addEventListener('scroll', lines);
     editor.addEventListener('keydown', event => { if (event.key === 'Tab') { event.preventDefault(); const start = editor.selectionStart; editor.setRangeText('  ', start, editor.selectionEnd, 'end'); editor.dispatchEvent(new Event('input')); } });
     panel.querySelector('.run').addEventListener('click', run);
+    const expandButton=panel.querySelector('.expand-preview');
+    function expand(open){panel.querySelector('.preview').classList.toggle('preview-expanded',open);expandButton.setAttribute('aria-expanded',String(open));expandButton.textContent=open?'× Close preview':'⛶ Expand preview';document.body.classList.toggle('has-expanded-preview',open);}
+    expandButton.addEventListener('click',()=>expand(expandButton.getAttribute('aria-expanded')!=='true'));
+    panel.addEventListener('keydown',event=>{if(event.key==='Escape')expand(false);});
     loadEditor(); run();
   });
 }
