@@ -24,7 +24,7 @@ for (const version of definition.versions) {
 versionSelect.value = selectedVersion;
 document.title = `${definition.title} · Version ${selectedVersion}`;
 status.textContent = storageWarning || (invalidVersion ? 'Invalid URL version. Showing the editor selection.' : !hasSavedData ? 'Default examples · no saved edits in this browser' : hasVersion ? 'Saved code · fixed version' : 'Saved code · follows editor version on reload');
-document.querySelector('#inventory-frame').srcdoc = buildInventoryDocument(pageType, selectedVersion, pageState[pageType].versions[selectedVersion]);
+document.querySelector('#inventory-frame').srcdoc = buildInventoryDocument(pageType, selectedVersion, pageState[pageType].versions[selectedVersion], pageState.widgets);
 versionSelect.addEventListener('change', () => {
   const next = new URL(location.href); next.searchParams.set('version', versionSelect.value); location.assign(next.href);
 });

@@ -1,0 +1,5 @@
+/* Solo afecta al elemento que crea este ejemplo. */
+.demo-budget { margin: 10px 0; padding: 10px; border-left: 3px solid var(--inventory-accent, #007f86); background: #f0f7f7; font: 11px/1.5 Arial, sans-serif; color: #24434a; white-space: normal; }
+.demo-budget strong { display: block; font-size: 17px; }
+.inventory-v6 .all-in-price { flex-wrap: wrap; }
+.inventory-v6 .all-in-price .demo-budget { flex-basis: 100%; }

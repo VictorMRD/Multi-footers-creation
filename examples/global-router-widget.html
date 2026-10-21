@@ -1,0 +1,20 @@
+<script>
+// Alternativa válida en un contenedor global: enrutar explícitamente por vista y versión.
+// Esto demuestra que el problema no es la ubicación física del textarea por sí sola.
+(function ($) {
+  const page = document.querySelector('.inventory-page');
+  if (page.dataset.inventoryType !== 'listing') return;
+  const adapters = {4: '.grid-total', 5: '.compact-pricing > div:first-child', 6: '.all-in-price'};
+  const selector = adapters[page.dataset.version];
+  if (!selector) return;
+  $('.vehicle-card').each(function () {
+    const target = this.querySelector(selector);
+    if (!target) return;
+    target.querySelector('.demo-budget')?.remove();
+    const value = (Number(this.dataset.price) / 52).toLocaleString('en-US', {style:'currency',currency:'USD',maximumFractionDigits:0});
+    $('<div class="demo-budget">').text(value + '/semana · Precio ÷ 52, no financiación')
+      .css({fontSize:'11px',padding:'10px',background:'#edf7f6',color:'#175752',whiteSpace:'normal'}).appendTo(target);
+  });
+})(jQuery);
+
+</script>

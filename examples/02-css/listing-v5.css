@@ -1,0 +1,3 @@
+/* Listing V5: ajuste exclusivo de esta plantilla. */
+.inventory-v5 .compact-pricing .vehicle-price { font-size: 27px; }
+.inventory-v5 .reference-vehicles.list-view { grid-template-columns: minmax(0, 1fr); }

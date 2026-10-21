@@ -1,0 +1,110 @@
+[
+  {
+    "id": "selectors",
+    "folder": "01-selectores",
+    "title": "1. El selector de V4 no existe en V5/V6",
+    "summary": "Un presupuesto semanal se inserta en .grid-total. Al cambiar de plantilla, ese nodo desaparece.",
+    "failure": "Funciona en Listing V4. En V5 y V6 falla con target = null; el resto del mismo script no termina.",
+    "solution": "Cada versión conoce su punto de inserción y añade una guarda. El contenedor correcto queda guardado para la próxima vez que se seleccione esa versión.",
+    "initial": 4,
+    "global": "01-selectores/global-widget.html",
+    "scoped": [
+      {
+        "type": "listing",
+        "version": 4,
+        "js": "01-selectores/listing-v4.js",
+        "css": "01-selectores/listing-v4.css"
+      },
+      {
+        "type": "listing",
+        "version": 5,
+        "js": "01-selectores/listing-v5.js",
+        "css": "01-selectores/listing-v5.css"
+      },
+      {
+        "type": "listing",
+        "version": 6,
+        "js": "01-selectores/listing-v6.js",
+        "css": "01-selectores/listing-v6.css"
+      }
+    ]
+  },
+  {
+    "id": "css",
+    "folder": "02-css",
+    "title": "2. Un estilo global comprime las filas",
+    "summary": "Una cuadrícula de tres columnas que sirve en V4 se impone también sobre las filas de V5/V6.",
+    "failure": "En la vista ampliada de V4 la regla parece correcta. En V5/V6, tres filas completas se comprimen en columnas. El !important dificulta corregirlo desde otro estilo.",
+    "solution": "La regla de V4 solo vive en su versión. V5 y V6 conservan sus filas y sus propios ajustes de precio, sin !important.",
+    "initial": 4,
+    "global": "02-css/global-widget.html",
+    "scoped": [
+      {
+        "type": "listing",
+        "version": 4,
+        "js": "02-css/listing-v4.js",
+        "css": "02-css/listing-v4.css"
+      },
+      {
+        "type": "listing",
+        "version": 5,
+        "js": "02-css/listing-v5.js",
+        "css": "02-css/listing-v5.css"
+      },
+      {
+        "type": "listing",
+        "version": 6,
+        "js": "02-css/listing-v6.js",
+        "css": "02-css/listing-v6.css"
+      }
+    ]
+  },
+  {
+    "id": "actions",
+    "folder": "03-acciones",
+    "title": "3. Un CTA global alcanza controles y Details",
+    "summary": "Un selector demasiado amplio cambia las etiquetas de todos los botones, incluso los filtros y otra página.",
+    "failure": "Listing V6 pierde “Reset filters”, “List View” y “Grid View”. Listing V4/V5 y Details heredan una llamada de embarcaciones que no les corresponde.",
+    "solution": "Cada contenedor configura solo su CTA. Los filtros y controles permanecen intactos; Details conserva su propio mensaje.",
+    "initial": 6,
+    "global": "03-acciones/global-widget.html",
+    "scoped": [
+      {
+        "type": "listing",
+        "version": 4,
+        "js": "03-acciones/listing-v4.js",
+        "css": "03-acciones/listing-v4.css"
+      },
+      {
+        "type": "listing",
+        "version": 5,
+        "js": "03-acciones/listing-v5.js",
+        "css": "03-acciones/listing-v5.css"
+      },
+      {
+        "type": "listing",
+        "version": 6,
+        "js": "03-acciones/listing-v6.js",
+        "css": "03-acciones/listing-v6.css"
+      },
+      {
+        "type": "details",
+        "version": 1,
+        "js": "03-acciones/details-v1.js",
+        "css": "03-acciones/details-v1.css"
+      },
+      {
+        "type": "details",
+        "version": 3,
+        "js": "03-acciones/details-v3.js",
+        "css": "03-acciones/details-v3.css"
+      },
+      {
+        "type": "details",
+        "version": 6,
+        "js": "03-acciones/details-v6.js",
+        "css": "03-acciones/details-v6.css"
+      }
+    ]
+  }
+]

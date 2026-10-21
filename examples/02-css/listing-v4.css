@@ -1,0 +1,3 @@
+/* Listing V4: ajuste exclusivo de esta plantilla. */
+.inventory-v4 .grid-total .vehicle-price { font-size: 23px; }
+@media (min-width: 1101px) { .inventory-v4 .reference-vehicles.grid-view { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

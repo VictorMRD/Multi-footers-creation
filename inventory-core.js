@@ -1,4 +1,10 @@
 const STORAGE_KEY = 'dealer-inventory-studio-v1';
+const DEMO_BACKUP_KEY = STORAGE_KEY + '-before-examples';
+function defaultWidgets() { return { enabled: false, html: `<script>
+// JavaScript / jQuery compartido por todas las versiones.
+// jQuery está disponible; usa (function ($) { ... })(jQuery).
+</script>` }; }
+
 const definitions = [{ id: 'listing', title: 'Inventory Listing', subtitle: 'Customize your vehicle listing experience', versions: [1,2,3,4,5,6], icon: faIcon('table-cells') }, { id: 'details', title: 'Inventory Details', subtitle: 'Customize your vehicle details experience', versions: [1,3,6], icon: faIcon('list') }];
 // Inventory markup belongs to the application; version editors only own CSS and JS.
 const inventoryStyles = `
@@ -54,10 +60,12 @@ function initializeInventory() {
   dialog?.querySelector('.dialog-dismiss').addEventListener('click',()=>dialog.close());
 }
 function defaults() {
-  return Object.fromEntries(definitions.map(d => [d.id, { selected: 1, versions: Object.fromEntries(d.versions.map(v => [v, {
+  const configuration = Object.fromEntries(definitions.map(d => [d.id, { selected: 1, versions: Object.fromEntries(d.versions.map(v => [v, {
     js: d.id === 'listing' && listingReferences[v] ? `// Inventory Listing — Version ${v}\n// Runs after the fixed inventory is ready.\n// Built-in search, filters and actions are provided by the page.\n\ndocument.querySelector('.inventory-page').dataset.customVersion = '${v}';\n\n// Example: document.querySelectorAll('.vehicle-price')\n//   .forEach(price => price.style.fontWeight = '800');` : `// ${d.title} — Version ${v}\n// Applied to the fixed inventory page.\n\ndocument.querySelectorAll('.vehicle-action').forEach(button => {\n  button.addEventListener('click', () => {\n    button.textContent = 'Request received ✓';\n  });\n});`,
     css: d.id === 'listing' && listingReferences[v] ? `/* Inventory Listing — Version ${v} */\n/* Fixed layout based on the supplied reference. */\n\n.inventory-page { --inventory-accent: ${listingReferences[v].accent}; }\n/* Customize .reference-card, .vehicle-price or .reference-actions here. */` : `/* ${d.title} — Version ${v} */\n/* Style the existing inventory. HTML is managed by the site. */\n\n.inventory-page { --accent: #007f86; }\n.vehicle-price, .detail-price { color: var(--accent); }\n.vehicle-action { background: var(--accent); border-color: var(--accent); }`
   }])) } ]));
+  configuration.widgets = defaultWidgets();
+  return configuration;
 }
 function validate(data) {
   for (const d of definitions) {
@@ -69,10 +77,49 @@ function validate(data) {
     if (data.listing.versions[v].css === `/* Inventory Listing — Version ${v} */\n/* Style the existing inventory. HTML is managed by the site. */\n\n.inventory-page { --accent: #007f86; }\n.vehicle-price, .detail-price { color: var(--accent); }\n.vehicle-action { background: var(--accent); border-color: var(--accent); }`) data.listing.versions[v].css=defaults().listing.versions[v].css;
     if (data.listing.versions[v].js === `// Inventory Listing — Version ${v}\n// Applied to the fixed inventory page.\n\ndocument.querySelectorAll('.vehicle-action').forEach(button => {\n  button.addEventListener('click', () => {\n    button.textContent = 'Request received ✓';\n  });\n});`) data.listing.versions[v].js=defaults().listing.versions[v].js;
   }
-  return Object.fromEntries(definitions.map(d => [d.id, {selected: data[d.id].selected, versions: Object.fromEntries(d.versions.map(v => [v, {js:data[d.id].versions[v].js, css:data[d.id].versions[v].css}]))}]));
+  const widgets = data.widgets === undefined ? defaultWidgets() : data.widgets;
+  if (!widgets || typeof widgets.enabled !== 'boolean' || typeof widgets.html !== 'string') throw new Error('Invalid global widget');
+  const configuration = Object.fromEntries(definitions.map(d => [d.id, {selected: data[d.id].selected, versions: Object.fromEntries(d.versions.map(v => [v, {js:data[d.id].versions[v].js, css:data[d.id].versions[v].css}]))}]));
+  configuration.widgets = {enabled: widgets.enabled, html: widgets.html};
+  return configuration;
 }
 
-// Used by the embedded and standalone previews, keeping execution identical.
-function buildInventoryDocument(type, version, code) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${inventoryStyles}</style><link rel="stylesheet" href="inventory-layouts.css"><style>${code.css}</style></head><body>${inventoryMarkup(type, version)}<script>(${initializeInventory.toString()})();try { (0,eval)(${JSON.stringify(code.js).replace(/</g,'\\u003c')}); } catch(e) { const p = document.createElement('pre'); p.style.cssText='color:#b32d2e;white-space:pre-wrap;padding:12px;font:12px monospace'; p.textContent='JavaScript error: '+e.message; document.body.append(p); }<\/script></body></html>`;
+// An HTML widget accepts only inline classic JavaScript script tags, no inventory markup.
+function parseWidgetHTML(html) {
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  const scripts = [];
+  function inspect(node) {
+    if (node.nodeType === Node.COMMENT_NODE) return;
+    if (node.nodeType === Node.TEXT_NODE) { if (node.textContent.trim()) throw new Error('Envuelve el JavaScript en etiquetas <script>.'); return; }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    if (node.tagName !== 'SCRIPT') throw new Error('Solo se permiten etiquetas <script> con JavaScript; no HTML ni CSS directos.');
+    const type = (node.getAttribute('type') || '').toLowerCase();
+    if (node.hasAttribute('src') || (type && !['text/javascript', 'application/javascript'].includes(type))) throw new Error('Usa scripts clásicos inline. jQuery ya está incluido; no se permiten src ni módulos.');
+    scripts.push(node.textContent);
+  }
+  [...parsed.head.childNodes, ...parsed.body.childNodes].forEach(inspect);
+  return scripts;
+}
+// Runs inside the isolated frame. Each stage reports errors without stopping another container.
+function executeInventoryScripts(type, version, scripts, widgetError, versionCode) {
+  function report(stage, error) {
+    const notice = document.createElement('div');
+    notice.className = 'runtime-error'; notice.dataset.stage = stage; notice.setAttribute('role', 'alert');
+    notice.style.cssText = 'border-left:4px solid #b32d2e;background:#fff0f0;color:#8a2020;padding:14px;font:12px/1.6 monospace;white-space:pre-wrap;';
+    notice.textContent = stage + ': ' + (error.message || error);
+    document.body.prepend(notice);
+  }
+  const root = document.querySelector('.inventory-page'); root.dataset.inventoryType = type; root.dataset.version = version;
+  if (window.jQuery) window.jQuery.noConflict();
+  else report('jQuery', 'No se pudo cargar la biblioteca local.');
+  if (widgetError) report('Global widget', widgetError);
+  scripts.forEach((code, index) => { try { (0,eval)(code); } catch (error) { report('Global widget · script ' + (index + 1), error); } });
+  try { (0,eval)(versionCode); } catch (error) { report(type + ' · Version ' + version, error); }
+}
+// Identical rendering and execution for embedded and standalone inventory pages.
+function buildInventoryDocument(type, version, code, widgets = defaultWidgets()) {
+  let scripts = [], widgetError = '';
+  if (widgets.enabled) { try { scripts = parseWidgetHTML(widgets.html); } catch(error) { widgetError = error.message; } }
+  const json = value => JSON.stringify(value).replaceAll('<', String.fromCharCode(92) + 'u003c');
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${inventoryStyles}</style><link rel="stylesheet" href="inventory-layouts.css"><style>${code.css}</style></head><body>${inventoryMarkup(type, version)}<script src="vendor/jquery-3.7.1.min.js"><\/script><script>(${initializeInventory.toString()})();(${executeInventoryScripts.toString()})(${json(type)},${json(version)},${json(scripts)},${json(widgetError)},${json(code.js)});<\/script></body></html>`;
 }

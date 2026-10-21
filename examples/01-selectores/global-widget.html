@@ -1,0 +1,21 @@
+<script>
+// Listing V4 global: punto de inserción propio de esta plantilla.
+(function ($) {
+  $('.vehicle-card').each(function () {
+    const card = this;
+    const target = card.querySelector('.grid-total');
+    // Supone que TODAS las versiones tienen el mismo contenedor.
+    const weekly = (Number(card.dataset.price) / 52).toLocaleString('en-US', {style:'currency',currency:'USD',maximumFractionDigits:0});
+    target.querySelector('.demo-budget')?.remove();
+    const badge = document.createElement('div');
+    badge.className = 'demo-budget';
+    badge.innerHTML = '<strong>' + weekly + '/semana</strong>Precio ÷ 52. Ejemplo matemático; no es una oferta de financiación.';
+    target.append(badge);
+  });
+  document.querySelector('.inventory-page').dataset.demoCompleted = 'true';
+})(jQuery);
+// Esta línea no se ejecuta si la suposición anterior lanza un error.
+document.querySelector('.inventory-page').dataset.globalFinished = 'true';
+jQuery('<style>').text("/* Solo afecta al elemento que crea este ejemplo. */\n.demo-budget { margin: 10px 0; padding: 10px; border-left: 3px solid var(--inventory-accent, #007f86); background: #f0f7f7; font: 11px/1.5 Arial, sans-serif; color: #24434a; white-space: normal; }\n.demo-budget strong { display: block; font-size: 17px; }\n").appendTo('head');
+
+</script>

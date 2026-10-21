@@ -77,3 +77,11 @@ Sin parámetros en la URL, cada recarga utiliza la versión seleccionada y guard
 Ambas páginas leen el mismo `localStorage` que el dashboard. Debes utilizar el mismo navegador, perfil y origen de GitHub Pages, con almacenamiento local permitido. Las páginas no guardan CSS/JS en el repositorio ni comparten las ediciones con otros visitantes. En otro navegador se cargan los ejemplos predeterminados; usa Export/Import para transferir tu configuración. El CSS y JS personalizados siguen ejecutándose dentro de un iframe aislado que ocupa la página, sin acceso al almacenamiento del dashboard.
 
 `inventory-core.js` contiene el código compartido para construir exactamente el mismo inventario en la vista integrada y en la página independiente. `inventory-page.js` lee las ediciones guardadas, selecciona la versión y detecta cambios de otras pestañas. No requiere backend ni dependencias adicionales.
+
+## Widgets y ejemplos para la exposición
+
+La opción **Widgets** del sidebar ofrece un contenedor HTML limitado a scripts JavaScript/jQuery globales, desactivado por defecto. **Save & apply widget** lo guarda y actualiza las previews; las páginas independientes lo leen al recargar. jQuery 3.7.1 se incluye localmente y también está disponible en los editores de cada versión mediante `jQuery` o un alias `$` dentro de una función.
+
+El laboratorio contiene tres comparaciones ejecutables: selector incompatible, conflicto de CSS y CTA con alcance excesivo. Cada una ofrece **Probar global**, **Aplicar solución por versión** y lectura del código. Se solicita confirmación antes de reemplazar destinos concretos y se guarda una copia restaurable anterior al primer ejemplo. También hay un contador común y un router global con adaptadores para mostrar cuándo el enfoque global sí tiene sentido.
+
+La guía de exposición, los argumentos positivos y negativos, las limitaciones y todos los scripts/estilos están en [examples/README.md](examples/README.md). Las pruebas no realizan solicitudes comerciales ni envíos de datos externos.
