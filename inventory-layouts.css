@@ -5,3 +5,24 @@
 @media print{.inventory-filters,.reference-toolbar,.reference-header,.reference-actions,.compare-models,.print-button,.demo-disclaimer{display:none!important}.inventory-reference-body{display:block}.vehicle-card{break-inside:avoid}}
 
 .inventory-v4{--inventory-accent:#ed1024}.inventory-v5{--inventory-accent:#f51c2b}.inventory-v6{--inventory-accent:#fc6d1c}
+
+/* Locally bundled Font Awesome SVGs and interactive control states. */
+.fa-icon{display:inline-block;width:1em;height:1em;fill:currentColor;vertical-align:-.125em;flex-shrink:0}
+.reference-inventory button,.filter-group summary,.filter-group label,.compare-models,.reference-toolbar input,.reference-toolbar select{transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease,filter .18s ease}
+.reference-inventory button:hover{transform:translateY(-1px);box-shadow:0 2px 5px #0002}
+.reference-inventory button:active{transform:translateY(0);box-shadow:inset 0 1px 3px #0002}
+.reference-inventory button .fa-icon{transition:transform .18s ease}.reference-actions button:hover .fa-icon{transform:scale(1.12)}
+.filter-group summary .fa-icon{width:10px;height:10px;transition:transform .22s ease,color .18s ease}
+.filter-group[open] summary .fa-icon{transform:rotate(180deg);color:var(--inventory-accent)}
+.filter-group summary:hover,.filter-group summary:focus-visible{padding-left:22px}.filter-group summary{transition:padding-left .18s ease,background-color .18s ease,color .18s ease}
+.filter-group label:has(input:checked){color:#fff;background:#333;box-shadow:inset 3px 0 var(--inventory-accent)}
+.filter-group input,.compare-models input{cursor:pointer;transition:transform .15s ease}.filter-group input:active,.compare-models input:active{transform:scale(.9)}
+.compare-models:has(input:checked){box-shadow:inset 0 0 0 2px #1116,0 2px 4px #0002}
+.reference-inventory .view-switch button[aria-pressed=true]{box-shadow:inset 0 -3px #0002}.reference-inventory .view-switch button:hover{transform:none}
+.reference-toolbar input:hover,.reference-toolbar select:hover{border-color:var(--inventory-accent)}.reference-toolbar input:focus,.reference-toolbar select:focus{box-shadow:0 0 0 2px #0000000a}
+.reference-inventory .dialog-close:hover{transform:rotate(90deg);box-shadow:none}.inventory-dialog[open]{animation:dialog-in .18s ease-out}.inventory-dialog[open]::backdrop{animation:backdrop-in .18s ease-out}
+@keyframes dialog-in{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes backdrop-in{from{opacity:0}to{opacity:1}}
+@supports(interpolate-size:allow-keywords){.filter-group{interpolate-size:allow-keywords}.filter-group::details-content{block-size:0;opacity:0;overflow:clip;transition:block-size .22s ease,opacity .22s ease,content-visibility .22s;transition-behavior:allow-discrete}.filter-group[open]::details-content{block-size:auto;opacity:1}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reference-inventory button:hover,.reference-actions button:hover .fa-icon{transform:none}.filter-group summary:hover,.filter-group summary:focus-visible{padding-left:18px}}
+.inventory-page:not(.reference-inventory) button{transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease}.inventory-page:not(.reference-inventory) button:hover{transform:translateY(-1px);box-shadow:0 2px 5px #0002}.inventory-page:not(.reference-inventory) button:active{transform:translateY(0);box-shadow:inset 0 1px 2px #0002}
+@media(prefers-reduced-motion:reduce){.inventory-page:not(.reference-inventory) button{transition:none}.inventory-page:not(.reference-inventory) button:hover{transform:none}}

@@ -28,9 +28,10 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p _site
-          cp index.html styles.css app.js inventory-layouts.js inventory-layouts.css .nojekyll _site/
+          cp index.html styles.css app.js icons.js inventory-layouts.js inventory-layouts.css .nojekyll _site/
           cp -R assets _site/
           node --check _site/app.js
+          node --check _site/icons.js
           node --check _site/inventory-layouts.js
           test -s _site/index.html
           test -s _site/styles.css

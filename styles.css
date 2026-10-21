@@ -14,3 +14,27 @@
 select:hover{border-color:#007f86;background:#f6fbfb}.account:hover .avatar{background:#007f86}.sidebar-bottom:hover{color:#00d5c6;cursor:pointer}
 
 .expand-preview{border:1px solid #a7aaad;background:#fff;color:#007f86;padding:4px 8px;font-size:10px;border-radius:2px;cursor:pointer;margin-left:auto}.expand-preview:hover{background:#eaf6f5;border-color:#007f86}.preview-heading{align-items:center;gap:12px}.preview-status{letter-spacing:0}.preview-expanded{position:fixed;inset:34px 0 0 202px;z-index:50;background:#fff;display:flex;flex-direction:column}.preview-expanded .preview-heading{flex-shrink:0;background:#f6f7f7;border-bottom:1px solid #c3c4c7;padding:12px 20px}.preview-expanded iframe{height:100%!important;flex:1;min-height:0}.has-expanded-preview{overflow:hidden}@media(max-width:650px){.preview-expanded{left:0}.preview-heading{flex-wrap:wrap}.preview-status{font-size:8px}}
+
+/* Stacked inventories: each fixed preview sits to the right of its code editor. */
+.workspace{grid-template-columns:minmax(0,1fr);gap:28px}
+.panel{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(0,1.6fr);grid-template-rows:auto auto 1fr auto}
+.panel-top{grid-column:1/-1;grid-row:1}
+.version-field{grid-column:1;grid-row:2}
+.editor-widget{grid-column:1;grid-row:3;display:flex;flex-direction:column}
+.editor-widget .code-container{height:430px;flex:1;min-height:350px}
+.panel-actions{grid-column:1;grid-row:4}
+.panel>.preview{grid-column:2;grid-row:2/5;border-top:0;border-left:1px solid #c3c4c7;display:flex;flex-direction:column;min-width:0}
+.panel>.preview .preview-heading{min-height:52px;border-bottom:1px solid #dcdcde;padding:12px 16px;flex-wrap:wrap}
+.panel>.preview iframe{height:100%;flex:1;min-height:650px}
+.panel>.preview.preview-expanded{border-left:0}.panel>.preview.preview-expanded iframe{min-height:0}
+.fa-icon{width:1em;height:1em;display:inline-block;fill:currentColor;vertical-align:-.125em;flex-shrink:0}
+.nav-item>.fa-icon{width:16px;height:16px}.chevron{display:flex;align-items:center;margin-left:auto;margin-right:6px}.chevron .fa-icon{width:10px;height:10px;transform:rotate(-90deg);transition:transform .2s ease}
+#dealer-toggle[aria-expanded=true] .chevron .fa-icon,.dealer-nav:hover .chevron .fa-icon,.dealer-nav:focus-within .chevron .fa-icon{transform:rotate(0)}
+.button,.expand-preview{transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease}
+.button:hover,.expand-preview:hover{box-shadow:0 2px 4px #002b3a18;transform:translateY(-1px)}
+.button:active,.expand-preview:active{transform:translateY(0);box-shadow:inset 0 1px 2px #002b3a20}
+.button .fa-icon,.expand-preview .fa-icon{transition:transform .18s ease}.run:hover .fa-icon{transform:translateX(2px)}.expand-preview:hover .fa-icon{transform:scale(1.1)}
+.tab{transition:background-color .18s ease,color .18s ease,border-color .18s ease}.nav-item>.fa-icon{transition:transform .18s ease}.nav-item:hover>.fa-icon{transform:translateX(2px)}
+.editor-widget:focus-within{border-color:#007f86;box-shadow:0 0 0 1px #007f8620}
+@media(max-width:900px){.panel{display:block}.panel>.preview{border-left:0;border-top:1px solid #c3c4c7}.panel>.preview iframe{height:650px;flex:auto}.editor-widget .code-container{height:320px;min-height:260px}.panel>.preview.preview-expanded{display:flex}.panel>.preview.preview-expanded iframe{height:100%;flex:1}.preview-status{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.button:hover,.expand-preview:hover,.nav-item:hover>.fa-icon,.run:hover .fa-icon{transform:none}}

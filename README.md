@@ -58,3 +58,9 @@ La búsqueda, los filtros disponibles, el orden de precios y el cambio de vista 
 `inventory-layouts.js` contiene los datos y el marcado fijo de cada versión. `inventory-layouts.css` define sus estilos base. El CSS del editor se carga después y el JS se ejecuta cuando el inventario está listo, en un iframe nuevo por ejecución. Selectores adicionales: `.reference-card`, `.price-breakdown`, `.reference-actions`, `.primary-action`, `.reference-description`, `.reference-media`, `.savings`. La variable CSS `--inventory-accent` permite cambiar el acento de cada versión.
 
 Las ediciones existentes se conservan. Solo los ejemplos CSS y JS de las versiones 4–6 que coincidan exactamente con los valores originales se actualizan a los nuevos ejemplos.
+
+## Distribución e interacción
+
+Inventory Listing aparece encima de Inventory Details. En escritorio, cada sección coloca el editor a la izquierda y su vista previa a la derecha. En ventanas de hasta 900 px de ancho, los controles se apilan para conservar legibilidad. Expand preview sigue permitiendo revisar el inventario con mayor ancho.
+
+El dashboard y los inventarios utilizan iconos SVG de **Font Awesome Free 6.7.2**, incluidos localmente en `icons.js`, con licencia en `assets/fontawesome-LICENSE.txt`. No se requiere conexión a un CDN. La flecha de Dealer settings y las de los filtros cambian de orientación al abrirse; botones, filtros y selecciones tienen estados hover, focus y active. Las animaciones respetan `prefers-reduced-motion`.
