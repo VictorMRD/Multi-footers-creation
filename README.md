@@ -64,3 +64,16 @@ Las ediciones existentes se conservan. Solo los ejemplos CSS y JS de las version
 Inventory Listing aparece encima de Inventory Details. En escritorio, cada sección coloca el editor a la izquierda y su vista previa a la derecha. En ventanas de hasta 900 px de ancho, los controles se apilan para conservar legibilidad. Expand preview sigue permitiendo revisar el inventario con mayor ancho.
 
 El dashboard y los inventarios utilizan iconos SVG de **Font Awesome Free 6.7.2**, incluidos localmente en `icons.js`, con licencia en `assets/fontawesome-LICENSE.txt`. No se requiere conexión a un CDN. La flecha de Dealer settings y las de los filtros cambian de orientación al abrirse; botones, filtros y selecciones tienen estados hover, focus y active. Las animaciones respetan `prefers-reduced-motion`.
+
+## Inventarios en páginas independientes
+
+- [Inventory Listing](https://victormrd.github.io/Multi-footers-creation/inventory-listing.html)
+- [Inventory Details](https://victormrd.github.io/Multi-footers-creation/inventory-details.html)
+
+En cada sección del editor, **Open page** abre el inventario correspondiente en otra pestaña. Selecciona una versión, edita CSS o JavaScript y pulsa **Save changes**. El guardado automático al escribir también sigue activo. En la pestaña del inventario, pulsa **Reload changes** o recarga el navegador para aplicar las ediciones. Si la página está abierta cuando guardas, aparece el aviso de cambios disponibles; no se reinicia la página mientras la estás revisando.
+
+Sin parámetros en la URL, cada recarga utiliza la versión seleccionada y guardada en el editor para ese inventario. Para mantener una versión fija, usa el selector de la página o añade `?version=6` (Details admite 1, 3 y 6; Listing admite 1–6). **Follow editor version** elimina ese parámetro y vuelve a seguir la selección del editor. El selector de la página independiente no modifica la selección del editor.
+
+Ambas páginas leen el mismo `localStorage` que el dashboard. Debes utilizar el mismo navegador, perfil y origen de GitHub Pages, con almacenamiento local permitido. Las páginas no guardan CSS/JS en el repositorio ni comparten las ediciones con otros visitantes. En otro navegador se cargan los ejemplos predeterminados; usa Export/Import para transferir tu configuración. El CSS y JS personalizados siguen ejecutándose dentro de un iframe aislado que ocupa la página, sin acceso al almacenamiento del dashboard.
+
+`inventory-core.js` contiene el código compartido para construir exactamente el mismo inventario en la vista integrada y en la página independiente. `inventory-page.js` lee las ediciones guardadas, selecciona la versión y detecta cambios de otras pestañas. No requiere backend ni dependencias adicionales.
