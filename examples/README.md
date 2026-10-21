@@ -128,6 +128,18 @@ El primer monolito **funciona**: utiliza contratos correctos, un router, funcion
 
 La comparación en Widgets muestra el archivo global completo y el módulo elegido lado a lado. El contador muestra las líneas reales del archivo seleccionado, no una promesa de que los módulos sumen menos líneas. Cambiar el selector del módulo permite leer los seis JS y sus seis CSS.
 
+### Mucho código presente, poca lógica activa
+
+El archivo global ampliado contiene **806 líneas y 37,758 bytes**, con seis adaptadores actuales y **diez revisiones históricas simuladas**. El archivo separado de Listing V4 contiene **41 líneas de JS y 4 de CSS**. Son medidas de estos archivos concretos: no incluyen la librería de instrumentación compartida y no equivalen al tamaño total de todos los módulos del producto.
+
+El [archivo histórico legible](04-monolito/legacy-archive.js) contiene filtros por hash, paginación y ordenamiento de tablas, comparación y favoritos, pestañas de especificaciones, una galería, un simulador financiero, accesorios, un formulario, cargos náuticos y un panel de paquetes. Sus selectores pertenecen a revisiones ficticias diferentes; no se afirma que las versiones reales del proveedor estén obsoletas.
+
+Las funciones históricas permanecen **definidas pero sin invocar**. El router solo monta el contexto actual. La preview muestra cuántos adaptadores se montaron y confirma cero invocaciones heredadas. La presencia de código inactivo aumenta lo que se conserva y revisa en ese campo; no significa que todas sus funciones estén ejecutándose ni demuestra por sí sola una ralentización.
+
+En Widgets, el comparador muestra líneas y KiB del archivo seleccionado. **Localizar módulo equivalente dentro del global** salta al mismo contexto dentro de las 806 líneas. El mapa contiene los 16 bloques con su estado y rango de líneas. Estos rangos y tamaños están en [manifest.json](04-monolito/manifest.json) y corresponden al código real, no a cifras decorativas.
+
+Esta comparación permite mostrar el trabajo cotidiano: para cambiar la campaña de V4, el usuario conserva en el campo global estilos de otras versiones y cientos de líneas de compatibilidad antigua. En el enfoque separado abre el contenedor V4; los módulos de otras versiones pueden seguir guardados sin mezclarse en su unidad de edición. No es necesario borrar esos contenedores para volver a una versión anterior.
+
 ### Hotfix local realizado en una configuración compartida
 
 La campaña de ATV se pretendía activar solo en V4. El operador cambia la constante común:

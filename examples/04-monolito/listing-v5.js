@@ -33,7 +33,7 @@ jQuery(".inventory-v5 .reference-actions .primary-action").text("Cotizar este ve
     }
     InventoryLab.showQuote(unit, {
       sku: unit.dataset.stock,
-      name: unit.querySelector('h2, h1').textContent.trim(),
+      name: unit.querySelector('.reference-description h2, .vehicle-body h2, :scope > h1').textContent.trim(),
       cents
     }, 'Cotización correcta · Listing V5');
   };

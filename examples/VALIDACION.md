@@ -25,3 +25,15 @@ Comprobaciones funcionales realizadas con Chromium y Playwright sobre la aplicac
 | Adaptación de Widgets | No hay desbordamiento horizontal de la página a 390 px. |
 
 No hubo errores de página inesperados durante esta secuencia. No se validaron reglas fiscales, financiación comercial, APIs de venta, todos los navegadores ni una matriz completa de accesibilidad. `pointer-events: none` se probó como regresión de puntero; no equivale a bloquear necesariamente la activación mediante teclado.
+
+
+## Ampliación del monolito con archivo histórico
+
+- El JS global tiene 806 líneas y 37,758 bytes; el manifiesto se contrastó con el archivo y con los rangos de sus 16 bloques.
+- Incluye seis adaptadores actuales y diez módulos históricos simulados. Se verificó cero invocaciones históricas en Listing 4/5/6, Details 1/3/6 y la vista genérica Listing V2.
+- Los seis adaptadores actuales mantienen importes correctos y cotizaciones de la unidad seleccionada. En Details se comprobó también el nombre del producto, sin tomar encabezados del panel de auditoría.
+- Se comprobó la lectura del código completo, los tamaños del archivo seleccionado, el mapa de 16 bloques y los saltos al módulo equivalente y a un módulo histórico.
+- El hotfix de V4 sigue alcanzando V5 y Details en el global. La solución separada mantiene la campaña en V4 y no carga el informe ni las implementaciones heredadas del monolito.
+- Se comprobó el informe en la página independiente, ausencia de desbordamiento horizontal a 390 px y restauración exacta de la configuración anterior al ejemplo.
+
+Los módulos históricos no se probaron sobre sus plantillas ficticias ni se declaran compatibles con los inventarios actuales. No se midió rendimiento y no se afirma que sus funciones se ejecuten por estar definidas en el archivo.

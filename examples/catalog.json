@@ -113,8 +113,8 @@
   {
     "id": "monolith",
     "folder": "04-monolito",
-    "title": "4. Seis contextos dentro de un solo widget",
-    "summary": "CSS, precios, identidad, CTA, eventos y seis adaptadores conviven en un global organizado. Un hotfix de V4 modifica un valor compartido y llega a todas las vistas.",
+    "title": "4. Un solo widget con código actual y diez revisiones heredadas",
+    "summary": "El global acumula seis contextos actuales, diez módulos históricos simulados, sus estilos y utilidades. Solo una ruta está activa, pero todo el archivo permanece en el mismo campo.",
     "failure": "Primero prueba el monolito, que funciona. Después simula el hotfix de V4: Listing V5/V6 y Details también ofrecen “Cotizar ATV con accesorios”. El archivo está ordenado, pero la edición y publicación siguen acopladas.",
     "solution": "Se guardan seis módulos. Solo Listing V4 recibe la campaña de ATV; V5, V6 y Details conservan sus mensajes, precios y cotizaciones. La funcionalidad común puede seguir en una librería compartida.",
     "initial": 4,
@@ -122,7 +122,8 @@
     "hotfix": "04-monolito/global-hotfix-widget.html",
     "extraSources": [
       "04-monolito/global.js",
-      "04-monolito/global.css"
+      "04-monolito/global.css",
+      "04-monolito/legacy-archive.js"
     ],
     "scoped": [
       {
@@ -161,6 +162,7 @@
         "js": "04-monolito/details-v6.js",
         "css": "04-monolito/details-v6.css"
       }
-    ]
+    ],
+    "manifest": "04-monolito/manifest.json"
   }
 ]

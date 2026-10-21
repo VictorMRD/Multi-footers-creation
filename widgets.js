@@ -115,13 +115,55 @@ function renderWidgets(keepDraft = false) {
     select.addEventListener('change',loadSource);card.querySelector('details').addEventListener('toggle',()=>{if(card.querySelector('details').open)loadSource();});
     if (scenario.hotfix) {
       const comparison=document.createElement('section');comparison.id='architecture-comparison';comparison.className='architecture-comparison';
-      comparison.innerHTML=`<h3>Todo el código, frente a la unidad que necesita la edición</h3><p>Ambos enfoques pueden funcionar. A la izquierda, un único archivo mezcla los seis contextos, sus CSS, precios, identidad y eventos. A la derecha, el contenedor activo tiene un objetivo. Compara el cambio de campaña de V4 y revisa después V5/V6 y Details.</p><div class="architecture-columns"><article><h4>Un widget global: seis contextos en el mismo cambio</h4><label>Archivo completo <select class="monolith-source" aria-label="Archivo global completo"></select></label><span class="source-metric"></span><pre tabindex="0"></pre></article><article><h4>Un contenedor por vista y versión</h4><label>Módulo <select class="module-source" aria-label="Módulo separado"></select></label><span class="source-metric"></span><pre tabindex="0"></pre></article></div><p class="architecture-limit">La separación no garantiza menos líneas totales ni evita un selector incorrecto. Reduce lo que necesitas abrir, modificar y volver a comprobar para una adaptación local. Las utilidades comunes pueden mantenerse en una librería compartida.</p>`;
-      const sides=[{select:comparison.querySelector('.monolith-source'),files:[...scenario.extraSources,scenario.global,scenario.hotfix],label:'Un archivo para seis contextos'},{select:comparison.querySelector('.module-source'),files:scenario.scoped.flatMap(target=>[target.js,target.css]),label:'Archivo de una vista y versión'}];
+      comparison.innerHTML=`<h3>Todo el código, frente a la unidad que necesita la edición</h3><p>Ambos enfoques pueden funcionar. A la izquierda, un único archivo mezcla seis contextos actuales y diez revisiones históricas simuladas, con CSS, filtros, galerías, formularios, precios y eventos. A la derecha, el contenedor activo tiene un objetivo. Compara el cambio de campaña de V4 y revisa después V5/V6 y Details.</p><div class="code-volume-stats" aria-live="polite"><div><strong class="global-line-count">…</strong><span>líneas en el global completo</span></div><div><strong>6 + 10</strong><span>contextos actuales + históricos simulados</span></div><div><strong class="module-line-count">…</strong><span>líneas en el archivo separado elegido</span></div></div><div class="architecture-columns"><article><h4>Un widget global: 16 bloques presentes en el mismo campo</h4><label>Archivo completo <select class="monolith-source" aria-label="Archivo global completo"></select></label><span class="source-metric"></span><pre tabindex="0"></pre></article><article><h4>Un contenedor por vista y versión</h4><label>Módulo <select class="module-source" aria-label="Módulo separado"></select></label><span class="source-metric"></span><pre tabindex="0"></pre></article></div><div class="module-navigation"><button class="button jump-to-equivalent">Localizar módulo equivalente dentro del global</button><span class="module-location" role="status"></span></div><details class="archive-map"><summary>Ver mapa de bloques actuales e históricos</summary><p>Los históricos son ejemplos de revisiones retiradas con selectores distintos. Permanecen definidos en el archivo, pero el router actual no los ejecuta.</p><table><thead><tr><th>Bloque</th><th>Estado en esta comparación</th><th>Líneas</th><th>Ubicación</th></tr></thead><tbody></tbody></table></details><p class="architecture-limit">La separación no garantiza menos líneas totales ni evita un selector incorrecto. Reduce lo que necesitas abrir, modificar y volver a comprobar para una adaptación local. Las utilidades comunes pueden mantenerse en una librería compartida.</p>`;
+      const globalSource=comparison.querySelector('.monolith-source');
+      const moduleSource=comparison.querySelector('.module-source');
+      let sourceManifest=null;
+      const currentModuleId=()=>moduleSource.value.split('/').pop()?.replace(/\.(js|css)$/,'');
+      function formatBytes(bytes){return (bytes/1024).toLocaleString('es-MX',{maximumFractionDigits:1})+' KiB';}
+      async function jumpToModule(module){
+        globalSource.value='04-monolito/global.js';
+        await refreshGlobal();
+        const pre=globalSource.closest('article').querySelector('pre');
+        const lineHeight=parseFloat(getComputedStyle(pre).lineHeight)||18.7;
+        pre.scrollTop=Math.max(0,(module.startLine-2)*lineHeight);pre.focus({preventScroll:true});
+        comparison.querySelector('.module-location').textContent=module.label+' · líneas '+module.startLine+'–'+module.endLine+' del global completo';
+      }
+      function updateModuleMap(){
+        if(!sourceManifest)return;
+        const selectedId=currentModuleId();
+        const body=comparison.querySelector('.archive-map tbody');body.replaceChildren();
+        for(const module of sourceManifest.modules){
+          const row=document.createElement('tr');row.dataset.moduleId=module.id;
+          row.classList.toggle('selected-module',module.id===selectedId);
+          const values=[module.label,module.status==='archived'?'Histórico simulado · sin invocar':module.id===selectedId?'Equivale al archivo elegido':'Otra vista / versión actual',module.startLine+'–'+module.endLine+' ('+module.lineCount+')'];
+          for(const value of values){const td=document.createElement('td');td.textContent=value;row.append(td);}
+          const td=document.createElement('td');const button=document.createElement('button');button.className='button';button.textContent='Ver bloque';button.addEventListener('click',()=>jumpToModule(module));td.append(button);row.append(td);body.append(row);
+        }
+      }
+      comparison.querySelector('.jump-to-equivalent').addEventListener('click',()=>{
+        const module=sourceManifest?.modules.find(module=>module.id===currentModuleId());
+        if(module)jumpToModule(module);
+      });
+      fetch('examples/'+scenario.manifest).then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json();}).then(manifest=>{
+        sourceManifest=manifest;comparison.querySelector('.global-line-count').textContent=manifest.lineCount;
+        comparison.querySelector('.global-line-count').title=formatBytes(manifest.bytes);
+        updateModuleMap();
+      }).catch(error=>{comparison.querySelector('.module-location').textContent='No se pudo cargar el mapa: '+error.message;});
+      const sides=[{select:globalSource,files:[...scenario.extraSources,scenario.global,scenario.hotfix],label:'Archivo completo, incluidos los módulos inactivos'},{select:moduleSource,files:scenario.scoped.flatMap(target=>[target.js,target.css]),label:'Archivo de una vista y versión'}];
+      let refreshGlobal=async()=>{};
       for(const side of sides){
         for(const file of side.files){const option=document.createElement('option');option.value=file;option.textContent=file;side.select.append(option);}
         let token=0;
-        const refresh=async()=>{const current=++token;try{const code=await exampleText(side.select.value);if(token!==current)return;side.select.closest('article').querySelector('pre').textContent=code;side.select.closest('article').querySelector('.source-metric').textContent=side.label+' · '+code.trimEnd().split('\n').length+' líneas en este archivo';}catch(error){side.select.closest('article').querySelector('pre').textContent=error.message;}};
-        side.select.addEventListener('change',refresh);refresh();
+        const refresh=async()=>{const current=++token;try{
+          const code=await exampleText(side.select.value);if(token!==current)return;
+          const count=code.trimEnd().split('\n').length;
+          side.select.closest('article').querySelector('pre').textContent=code;
+          side.select.closest('article').querySelector('.source-metric').textContent=side.label+' · '+count+' líneas · '+formatBytes(new TextEncoder().encode(code).length);
+          if(side.select===moduleSource){comparison.querySelector('.module-line-count').textContent=count;updateModuleMap();}
+        }catch(error){side.select.closest('article').querySelector('pre').textContent=error.message;}};
+        if(side.select===globalSource)refreshGlobal=refresh;
+        side.select.addEventListener('change',()=>{comparison.querySelector('.module-location').textContent='';refresh();});refresh();
       }
       card.append(comparison);
     }

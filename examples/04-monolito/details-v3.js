@@ -30,7 +30,7 @@ jQuery(".inventory-page > .vehicle-action").text("Solicitar ficha técnica · D3
     }
     InventoryLab.showQuote(unit, {
       sku: unit.dataset.stock,
-      name: unit.querySelector('h2, h1').textContent.trim(),
+      name: unit.querySelector('.reference-description h2, .vehicle-body h2, :scope > h1').textContent.trim(),
       cents
     }, 'Cotización correcta · Details V3');
   };

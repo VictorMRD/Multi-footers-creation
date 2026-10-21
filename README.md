@@ -87,3 +87,5 @@ El laboratorio contiene cuatro comparaciones ejecutables: cálculo global que pu
 Cada caso ofrece carga del global y de la solución, lectura del código, confirmación de reemplazo y una copia local restaurable anterior al primer ejemplo. Las auditorías comparan precios e identidad con referencias capturadas antes del código bajo prueba. Son instrumentos de esta demostración; los precios de producción deben validarse en el servidor. El contador compartido se conserva como ejemplo de una utilidad global legítima.
 
 La guía de exposición, los argumentos positivos y negativos, las limitaciones y todos los scripts/estilos están en [examples/README.md](examples/README.md). Las pruebas no realizan solicitudes comerciales ni envíos de datos externos.
+
+El ejemplo final de Widgets incluye ahora 806 líneas de código global, con seis contextos actuales y diez módulos históricos simulados que permanecen definidos sin ejecutarse. El comparador muestra tamaños reales, un mapa de los 16 bloques y un salto al módulo equivalente. La contraparte de Listing V4 conserva 41 líneas de JS y 4 de CSS en sus contenedores propios.

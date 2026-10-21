@@ -18,3 +18,118 @@
 .inventory-page[data-inventory-type="details"][data-version="3"] .detail-facts { border-color: #b8cbd0; }
 /* DETAILS V6 */
 .inventory-page[data-inventory-type="details"][data-version="6"] .detail-price { color: #345e8c; }
+
+/* ============================================================
+   CSS HISTÓRICO: selectores retirados, presentes en el mismo widget.
+   Ninguna de estas clases pertenece a las vistas actuales.
+   ============================================================ */
+
+/* Listing V1 · filtros por hash de una plantilla retirada */
+.legacy-listing-v1 { border: 1px solid #ccc; padding: 16px; }
+.legacy-listing-v1 [hidden] { display: none; }
+.legacy-listing-v1 button { min-height: 36px; border-radius: 3px; }
+.legacy-listing-v1 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-listing-v1 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-listing-v1 { padding: 10px; }
+  .legacy-listing-v1 button { width: 100%; }
+}
+
+/* Listing V2 · ordenamiento y paginación de tabla retirada */
+.legacy-listing-table-v2 { border: 1px solid #ccc; padding: 16px; }
+.legacy-listing-table-v2 [hidden] { display: none; }
+.legacy-listing-table-v2 button { min-height: 36px; border-radius: 3px; }
+.legacy-listing-table-v2 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-listing-table-v2 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-listing-table-v2 { padding: 10px; }
+  .legacy-listing-table-v2 button { width: 100%; }
+}
+
+/* Listing V3 · comparación y favoritos de grid retirado */
+.legacy-hybrid-grid-v3 { border: 1px solid #ccc; padding: 16px; }
+.legacy-hybrid-grid-v3 [hidden] { display: none; }
+.legacy-hybrid-grid-v3 button { min-height: 36px; border-radius: 3px; }
+.legacy-hybrid-grid-v3 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-hybrid-grid-v3 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-hybrid-grid-v3 { padding: 10px; }
+  .legacy-hybrid-grid-v3 button { width: 100%; }
+}
+
+/* Details V1 · pestañas de especificaciones antiguas */
+.legacy-details-tabs-v1 { border: 1px solid #ccc; padding: 16px; }
+.legacy-details-tabs-v1 [hidden] { display: none; }
+.legacy-details-tabs-v1 button { min-height: 36px; border-radius: 3px; }
+.legacy-details-tabs-v1 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-details-tabs-v1 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-details-tabs-v1 { padding: 10px; }
+  .legacy-details-tabs-v1 button { width: 100%; }
+}
+
+/* Details V2 · galería retirada con controles propios */
+.legacy-detail-gallery-v2 { border: 1px solid #ccc; padding: 16px; }
+.legacy-detail-gallery-v2 [hidden] { display: none; }
+.legacy-detail-gallery-v2 button { min-height: 36px; border-radius: 3px; }
+.legacy-detail-gallery-v2 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-detail-gallery-v2 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-detail-gallery-v2 { padding: 10px; }
+  .legacy-detail-gallery-v2 button { width: 100%; }
+}
+
+/* Details V3 · simulador financiero antiguo */
+.legacy-finance-details-v3 { border: 1px solid #ccc; padding: 16px; }
+.legacy-finance-details-v3 [hidden] { display: none; }
+.legacy-finance-details-v3 button { min-height: 36px; border-radius: 3px; }
+.legacy-finance-details-v3 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-finance-details-v3 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-finance-details-v3 { padding: 10px; }
+  .legacy-finance-details-v3 button { width: 100%; }
+}
+
+/* Listing V4 revisión anterior · accesorios y cargos */
+.legacy-accessories-card-v4 { border: 1px solid #ccc; padding: 16px; }
+.legacy-accessories-card-v4 [hidden] { display: none; }
+.legacy-accessories-card-v4 button { min-height: 36px; border-radius: 3px; }
+.legacy-accessories-card-v4 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-accessories-card-v4 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-accessories-card-v4 { padding: 10px; }
+  .legacy-accessories-card-v4 button { width: 100%; }
+}
+
+/* Listing V5 revisión anterior · formulario de consulta */
+.legacy-lead-form-v5 { border: 1px solid #ccc; padding: 16px; }
+.legacy-lead-form-v5 [hidden] { display: none; }
+.legacy-lead-form-v5 button { min-height: 36px; border-radius: 3px; }
+.legacy-lead-form-v5 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-lead-form-v5 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-lead-form-v5 { padding: 10px; }
+  .legacy-lead-form-v5 button { width: 100%; }
+}
+
+/* Listing V6 beta retirada · presentación de cargos náuticos */
+.legacy-marine-fees-v6 { border: 1px solid #ccc; padding: 16px; }
+.legacy-marine-fees-v6 [hidden] { display: none; }
+.legacy-marine-fees-v6 button { min-height: 36px; border-radius: 3px; }
+.legacy-marine-fees-v6 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-marine-fees-v6 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-marine-fees-v6 { padding: 10px; }
+  .legacy-marine-fees-v6 button { width: 100%; }
+}
+
+/* Details V6 beta retirada · paquetes y panel móvil */
+.legacy-detail-packages-v6 { border: 1px solid #ccc; padding: 16px; }
+.legacy-detail-packages-v6 [hidden] { display: none; }
+.legacy-detail-packages-v6 button { min-height: 36px; border-radius: 3px; }
+.legacy-detail-packages-v6 [aria-invalid="true"] { border-color: #b32d2e; }
+.legacy-detail-packages-v6 .legacy-field-error { color: #b32d2e; font-size: 12px; }
+@media (max-width: 600px) {
+  .legacy-detail-packages-v6 { padding: 10px; }
+  .legacy-detail-packages-v6 button { width: 100%; }
+}

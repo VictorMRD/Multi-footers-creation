@@ -1,0 +1,154 @@
+{
+  "source": "04-monolito/global.js",
+  "lineCount": 806,
+  "bytes": 37758,
+  "currentContexts": 6,
+  "archivedModules": 10,
+  "modules": [
+    {
+      "id": "listing-v4",
+      "status": "current",
+      "label": "Listing V4",
+      "startLine": 197,
+      "endLine": 208,
+      "lineCount": 12,
+      "bytes": 471
+    },
+    {
+      "id": "listing-v5",
+      "status": "current",
+      "label": "Listing V5",
+      "startLine": 213,
+      "endLine": 224,
+      "lineCount": 12,
+      "bytes": 476
+    },
+    {
+      "id": "listing-v6",
+      "status": "current",
+      "label": "Listing V6",
+      "startLine": 229,
+      "endLine": 240,
+      "lineCount": 12,
+      "bytes": 473
+    },
+    {
+      "id": "details-v1",
+      "status": "current",
+      "label": "Details V1",
+      "startLine": 245,
+      "endLine": 253,
+      "lineCount": 9,
+      "bytes": 307
+    },
+    {
+      "id": "details-v3",
+      "status": "current",
+      "label": "Details V3",
+      "startLine": 258,
+      "endLine": 266,
+      "lineCount": 9,
+      "bytes": 307
+    },
+    {
+      "id": "details-v6",
+      "status": "current",
+      "label": "Details V6",
+      "startLine": 271,
+      "endLine": 279,
+      "lineCount": 9,
+      "bytes": 307
+    },
+    {
+      "id": "legacy-listing-v1",
+      "status": "archived",
+      "label": "Listing V1 · filtros por hash de una plantilla retirada",
+      "startLine": 289,
+      "endLine": 343,
+      "lineCount": 55,
+      "bytes": 1970
+    },
+    {
+      "id": "legacy-listing-v2",
+      "status": "archived",
+      "label": "Listing V2 · ordenamiento y paginación de tabla retirada",
+      "startLine": 345,
+      "endLine": 394,
+      "lineCount": 50,
+      "bytes": 2210
+    },
+    {
+      "id": "legacy-listing-v3",
+      "status": "archived",
+      "label": "Listing V3 · comparación y favoritos de grid retirado",
+      "startLine": 396,
+      "endLine": 447,
+      "lineCount": 52,
+      "bytes": 2248
+    },
+    {
+      "id": "legacy-details-tabs",
+      "status": "archived",
+      "label": "Details V1 · pestañas de especificaciones antiguas",
+      "startLine": 449,
+      "endLine": 493,
+      "lineCount": 45,
+      "bytes": 1869
+    },
+    {
+      "id": "legacy-details-gallery",
+      "status": "archived",
+      "label": "Details V2 · galería retirada con controles propios",
+      "startLine": 495,
+      "endLine": 535,
+      "lineCount": 41,
+      "bytes": 2032
+    },
+    {
+      "id": "legacy-details-finance",
+      "status": "archived",
+      "label": "Details V3 · simulador financiero antiguo",
+      "startLine": 537,
+      "endLine": 585,
+      "lineCount": 49,
+      "bytes": 2251
+    },
+    {
+      "id": "legacy-v4-accessories",
+      "status": "archived",
+      "label": "Listing V4 revisión anterior · accesorios y cargos",
+      "startLine": 587,
+      "endLine": 631,
+      "lineCount": 45,
+      "bytes": 2214
+    },
+    {
+      "id": "legacy-v5-lead-form",
+      "status": "archived",
+      "label": "Listing V5 revisión anterior · formulario de consulta",
+      "startLine": 633,
+      "endLine": 679,
+      "lineCount": 47,
+      "bytes": 2070
+    },
+    {
+      "id": "legacy-v6-marine-fees",
+      "status": "archived",
+      "label": "Listing V6 beta retirada · presentación de cargos náuticos",
+      "startLine": 681,
+      "endLine": 722,
+      "lineCount": 42,
+      "bytes": 2187
+    },
+    {
+      "id": "legacy-v6-detail-packages",
+      "status": "archived",
+      "label": "Details V6 beta retirada · paquetes y panel móvil",
+      "startLine": 724,
+      "endLine": 766,
+      "lineCount": 43,
+      "bytes": 2083
+    }
+  ],
+  "note": "Los históricos son simulaciones. Sus funciones no se invocan; no se atribuye obsolescencia a versiones reales."
+}
